@@ -11,3 +11,7 @@ coverage/**
 .gitignore
 esbuild.mjs
 tsconfig.json
+media/local/**
+esbuild.local.mjs
+cli/**
+scripts/**

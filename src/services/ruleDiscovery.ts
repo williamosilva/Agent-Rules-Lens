@@ -1,12 +1,10 @@
-import * as vscode from 'vscode';
 import { USER_DECLARED_FORMAT_ID } from '../domain/formatCatalog';
 import type { DetectedArtifact, RuleFile, RuleWarning } from '../domain/types';
-import { normalizeRelativePath, relativeToRoot } from '../utils/paths';
+import { normalizeRelativePath } from '../utils/paths';
 import { classifyArtifact } from './artifactClassifier';
 import { createWarning } from './ruleDiagnostics';
-import { buildDiscoveryPatterns, buildExcludeGlob } from './ruleDiscoveryPatterns';
-
-const MAX_RESULTS = 4000;
+import { buildDiscoveryPatterns } from './ruleDiscoveryPatterns';
+import type { WorkspaceAccess, WorkspaceFile } from './workspaceAccess';
 
 export interface DiscoveryResult {
   /** Files of a resolved format, read so they can be parsed. */
@@ -17,25 +15,20 @@ export interface DiscoveryResult {
 }
 
 /**
- * Finds every file the catalog recognizes inside one workspace folder. Only
- * files of a resolved format are read from disk; a detected or candidate file
- * contributes nothing but its path, so it can never affect a token estimate.
+ * Finds every file the catalog recognizes inside one workspace root. Only files
+ * of a resolved format are read; a detected or candidate file contributes
+ * nothing but its path, so it can never affect a token estimate.
  */
 export async function discoverRuleFiles(
-  folder: vscode.WorkspaceFolder,
+  access: WorkspaceAccess,
   userPatterns: readonly string[] = []
 ): Promise<DiscoveryResult> {
-  const uris = new Map<string, vscode.Uri>();
+  const found = new Map<string, WorkspaceFile>();
 
   await Promise.all(
     buildDiscoveryPatterns(userPatterns).map(async (pattern) => {
-      const found = await vscode.workspace.findFiles(
-        new vscode.RelativePattern(folder, pattern.include),
-        buildExcludeGlob(pattern.exclude),
-        MAX_RESULTS
-      );
-      for (const uri of found) {
-        uris.set(uri.toString(), uri);
+      for (const file of await access.findFiles(pattern)) {
+        found.set(file.relativePath, file);
       }
     })
   );
@@ -43,13 +36,13 @@ export async function discoverRuleFiles(
   const files: RuleFile[] = [];
   const artifacts: DetectedArtifact[] = [];
   const warnings: RuleWarning[] = [];
-  const decoder = new TextDecoder('utf-8');
 
-  for (const uri of uris.values()) {
-    // Anything outside this folder is not ours to classify: a multi root
-    // workspace must never attribute a file to the wrong root.
-    const relativePath = relativeToRoot(folder.uri.fsPath, uri.fsPath);
-    if (relativePath === undefined || relativePath.length === 0) {
+  // Deterministic order: two runs over the same tree produce the same analysis.
+  const ordered = [...found.values()].sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+
+  for (const file of ordered) {
+    const { relativePath } = file;
+    if (relativePath.length === 0) {
       continue;
     }
     const classification = classifyArtifact(relativePath, userPatterns);
@@ -63,20 +56,19 @@ export async function discoverRuleFiles(
       classification.source !== undefined
     ) {
       try {
-        const bytes = await vscode.workspace.fs.readFile(uri);
         files.push({
           kind: classification.kind,
           source: classification.source,
           relativePath,
-          fsPath: uri.fsPath,
-          content: decoder.decode(bytes)
+          fsPath: file.fsPath,
+          content: await access.readTextFile(file)
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         warnings.push(
           createWarning('unreadable-file', `Could not read this rule file: ${message}`, {
             relativePath,
-            fsPath: uri.fsPath
+            fsPath: file.fsPath
           })
         );
       }
@@ -91,7 +83,7 @@ export async function discoverRuleFiles(
     artifacts.push({
       id: `${classification.supportLevel}:${relativePath}`,
       relativePath,
-      fsPath: uri.fsPath,
+      fsPath: file.fsPath,
       supportLevel: classification.supportLevel,
       artifactKind: classification.artifactKind,
       recognizedBy: classification.recognizedBy,
@@ -106,17 +98,12 @@ export async function discoverRuleFiles(
 
 /** Checks whether a workspace relative path exists on disk. */
 export async function workspaceFileExists(
-  folder: vscode.WorkspaceFolder,
+  access: WorkspaceAccess,
   relativePath: string
 ): Promise<boolean> {
   const normalized = normalizeRelativePath(relativePath);
   if (normalized.length === 0) {
     return false;
   }
-  try {
-    await vscode.workspace.fs.stat(vscode.Uri.joinPath(folder.uri, ...normalized.split('/')));
-    return true;
-  } catch {
-    return false;
-  }
+  return access.exists(normalized);
 }

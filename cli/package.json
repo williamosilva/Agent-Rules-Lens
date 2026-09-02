@@ -1,0 +1,47 @@
+{
+  "name": "agent-rules-lens",
+  "version": "0.1.0",
+  "description": "See which AI instruction files apply to a file in your project, from the terminal or a local dashboard.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/williamosilva/Agent-Rules-Lens.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/williamosilva/Agent-Rules-Lens/issues"
+  },
+  "homepage": "https://github.com/williamosilva/Agent-Rules-Lens#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "arl": "bin/arl.mjs",
+    "agent-rules-lens": "bin/arl.mjs"
+  },
+  "files": [
+    "bin/arl.mjs",
+    "dist/cli.cjs",
+    "media/local/index.html",
+    "media/local/local.css",
+    "media/local/local.js",
+    "media/shared/rulesRenderer.js",
+    "media/rules.css",
+    "media/agent-rules-lens.svg",
+    "media/icons/agents",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md"
+  ],
+  "keywords": [
+    "agents.md",
+    "claude",
+    "cursor",
+    "copilot",
+    "ai",
+    "instructions",
+    "rules",
+    "cli"
+  ]
+}

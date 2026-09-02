@@ -157,7 +157,11 @@ export function parseRuleFile(file: RuleFile): ParsedRule {
 
   if (hasFrontmatter) {
     try {
-      const parsed = matter(content);
+      // gray-matter caches the file object before parsing it, so after a
+      // malformed rule has thrown once every later parse of the same content
+      // returns that unparsed object without throwing. Passing options opts
+      // out of the cache and keeps a broken rule broken on every reload.
+      const parsed = matter(content, {});
       if (isPlainObject(parsed.data)) {
         frontmatter = parsed.data;
         body = parsed.content;

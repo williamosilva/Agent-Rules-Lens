@@ -1,0 +1,556 @@
+/* Theme tokens for the browser, plus the dashboard chrome around the shared
+   sidebar layout. rules.css is reused as is, so the job here is to give the
+   VS Code variables it reads a value outside the editor and to lay the page
+   out for a wide window instead of a narrow panel. */
+
+:root {
+  color-scheme: light dark;
+  --vscode-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, sans-serif;
+  --vscode-font-size: 13px;
+  --vscode-foreground: #1f2328;
+  --vscode-descriptionForeground: #59636e;
+  --vscode-sideBar-background: #ffffff;
+  --vscode-input-border: #d1d9e0;
+  --vscode-panel-border: #d1d9e0;
+  --vscode-focusBorder: #0550ae;
+  --vscode-list-hoverBackground: #f3f4f6;
+  --vscode-testing-iconPassed: #1a7f37;
+  --vscode-editorWarning-foreground: #8a6100;
+  --vscode-errorForeground: #cf222e;
+
+  --local-page: #f6f8fa;
+  --local-surface: #ffffff;
+  --local-accent: #0969da;
+  --local-accent-hover: #0860ca;
+  --local-accent-text: #ffffff;
+  --local-selected: #ddf4ff;
+  --local-disabled-bg: #eaeef2;
+  --local-disabled-text: #8b949e;
+  --local-gap: 16px;
+  --local-radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --vscode-foreground: #e6edf3;
+    --vscode-descriptionForeground: #9198a1;
+    --vscode-sideBar-background: #0d1117;
+    --vscode-input-border: #3d444d;
+    --vscode-panel-border: #3d444d;
+    --vscode-focusBorder: #78bbff;
+    --vscode-list-hoverBackground: #21262d;
+    --vscode-testing-iconPassed: #3fb950;
+    --vscode-editorWarning-foreground: #d29922;
+    --vscode-errorForeground: #ff7b72;
+
+    --local-page: #010409;
+    --local-surface: #0d1117;
+    --local-accent: #1f6feb;
+    --local-accent-hover: #388bfd;
+    --local-accent-text: #ffffff;
+    --local-selected: #163356;
+    --local-disabled-bg: #21262d;
+    --local-disabled-text: #6e7681;
+  }
+}
+
+body {
+  background: var(--local-page);
+  min-height: 100vh;
+}
+
+.shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--local-gap);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Screen reader only, for labels that the visual design carries elsewhere. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Header */
+
+.topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* The mark is a stroke-only SVG built around `currentColor`, which an <img>
+   cannot resolve. Used as a mask it takes the page's text colour, so it stays
+   legible in both themes without a second asset or a filter. */
+.brand-mark {
+  flex: 0 0 auto;
+  display: block;
+  width: 22px;
+  height: 22px;
+  background-color: var(--vscode-foreground);
+  -webkit-mask: url('/assets/logo.svg') no-repeat center / contain;
+  mask: url('/assets/logo.svg') no-repeat center / contain;
+}
+
+.brand-name {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* A plain textual badge: a border and a label, nothing promotional. */
+.badge {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border: 1px solid var(--arl-border);
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vscode-descriptionForeground);
+}
+
+.brand-meta {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.9rem;
+}
+
+.meta-label {
+  flex: 0 0 auto;
+}
+
+.workspace {
+  font-weight: 600;
+  color: var(--vscode-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-lang {
+  margin-left: auto;
+}
+
+.privacy {
+  margin: 0;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.85rem;
+}
+
+/* Two column layout: picker left, analysis right. */
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--local-gap);
+  align-items: start;
+  /* Stacked rows sit together instead of being spread down the viewport. */
+  align-content: start;
+  flex: 1 1 auto;
+}
+
+@media (min-width: 960px) {
+  .layout {
+    grid-template-columns: minmax(300px, 320px) minmax(0, 1fr);
+  }
+
+  /* The analysis fills the window rather than trailing off into blank space. */
+  .analysis {
+    min-height: calc(100vh - 190px);
+  }
+
+  .picker {
+    position: sticky;
+    top: 20px;
+  }
+}
+
+.panel {
+  background: var(--local-surface);
+  border: 1px solid var(--arl-border);
+  border-radius: var(--local-radius);
+  padding: 14px;
+  min-width: 0;
+}
+
+.panel-title {
+  margin: 0 0 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* File picker */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  color: var(--vscode-descriptionForeground);
+}
+
+.combo {
+  position: relative;
+}
+
+.field-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--vscode-foreground);
+  background: var(--local-page);
+  border: 1px solid var(--arl-border);
+  border-radius: 6px;
+}
+
+.field-input::placeholder {
+  color: var(--vscode-descriptionForeground);
+}
+
+.field-input:focus-visible,
+.button:focus-visible,
+.suggestion:focus-visible {
+  outline: 2px solid var(--vscode-focusBorder);
+  outline-offset: 1px;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: min(320px, 50vh);
+  overflow-y: auto;
+  background: var(--local-surface);
+  border: 1px solid var(--arl-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+}
+
+.suggestion {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  /* A long path stays readable: the tail matters most, so it wraps. */
+  overflow-wrap: anywhere;
+}
+
+.suggestion:hover,
+.suggestion.is-active {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.suggestion[aria-selected='true'] {
+  background: var(--local-selected);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.button {
+  flex: 1 1 auto;
+  min-height: 34px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--vscode-foreground);
+  background: var(--local-page);
+  border: 1px solid var(--arl-border);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.button.is-primary {
+  background: var(--local-accent);
+  border-color: var(--local-accent);
+  color: var(--local-accent-text);
+  font-weight: 600;
+}
+
+.button.is-primary:hover:not(:disabled) {
+  background: var(--local-accent-hover);
+}
+
+.button:disabled {
+  background: var(--local-disabled-bg);
+  border-color: var(--arl-border);
+  color: var(--local-disabled-text);
+  cursor: not-allowed;
+}
+
+.status,
+.detected {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--vscode-descriptionForeground);
+  overflow-wrap: anywhere;
+}
+
+.status:empty {
+  display: none;
+}
+
+/* Errors are named as well as coloured, so colour is never the only signal. */
+.status.is-error {
+  color: var(--vscode-errorForeground);
+  font-weight: 600;
+}
+
+.status.is-busy::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  vertical-align: -1px;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status.is-busy::before {
+    animation: none;
+  }
+}
+
+.detected {
+  padding-top: 10px;
+  border-top: 1px solid var(--arl-border);
+}
+
+/* Analysis panel */
+
+.analysis-body {
+  min-width: 0;
+}
+
+.empty-state {
+  padding: 32px 8px;
+  text-align: center;
+}
+
+.empty-state-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.empty-state-body {
+  margin: 6px 0 0;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* The shared renderer's own blocks, given room to breathe on a wide screen. */
+
+.analysis-body .header {
+  padding: 0 0 12px;
+  margin-bottom: 12px;
+}
+
+.analysis-body .header-path {
+  font-size: 1rem;
+}
+
+.analysis-body .section {
+  border: 1px solid var(--arl-border);
+  border-radius: 6px;
+  margin-bottom: var(--local-gap);
+  overflow: hidden;
+}
+
+.analysis-body .section > summary {
+  padding: 8px 10px;
+  background: var(--local-page);
+}
+
+.analysis-body .section-body {
+  padding: 4px 0 6px;
+}
+
+.analysis-body .rule,
+.analysis-body .artifact,
+.analysis-body .warning {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* Two columns of format sections once there is room, warnings full width. */
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--local-gap);
+  /* Each section keeps its own height instead of stretching to its neighbour. */
+  align-items: start;
+}
+
+.section-grid .section {
+  margin-bottom: 0;
+}
+
+@media (min-width: 1100px) {
+  .section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* A long name or glob wraps rather than being silently clipped. */
+.analysis-body .rule-name,
+.analysis-body .rule-state,
+.analysis-body .artifact-name,
+.analysis-body .artifact-note,
+.analysis-body .warning-title,
+.analysis-body .warning-summary,
+.analysis-body .header-path,
+.analysis-body .header-summary,
+.analysis-body .header-tokens,
+.analysis-body .section-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+}
+
+/* Preview */
+
+.preview-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--arl-border);
+  flex-wrap: wrap;
+}
+
+.preview-bar .panel-title {
+  margin: 0;
+}
+
+.preview-path {
+  flex: 1 1 200px;
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.preview-line {
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.85rem;
+}
+
+.preview-bar .button {
+  flex: 0 0 auto;
+}
+
+.preview-body {
+  margin: 0;
+  padding: 10px;
+  max-height: 50vh;
+  overflow: auto;
+  background: var(--local-page);
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+.preview-body code {
+  white-space: pre;
+}
+
+/* Small screens: one column, and nothing sticky stealing height. */
+
+@media (max-width: 959px) {
+  .picker {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    padding: 14px 12px 28px;
+    gap: 12px;
+  }
+
+  .brand-meta {
+    flex-basis: 100%;
+  }
+
+  .topbar-lang {
+    margin-left: 0;
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  .empty-state {
+    padding: 24px 4px;
+  }
+}

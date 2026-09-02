@@ -11,3 +11,8 @@ coverage/
 !.env.template
 .DS_Store
 Thumbs.db
+cli/dist/
+cli/media/
+cli/*.tgz
+cli/LICENSE
+cli/THIRD_PARTY_NOTICES.md
