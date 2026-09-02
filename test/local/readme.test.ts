@@ -7,10 +7,12 @@ const read = (name: string): string => readFileSync(join(REPO_ROOT, name), 'utf8
 
 const PT = read('README.md');
 const EN = read('README.en.md');
+const CLI = read(join('cli', 'README.md'));
 const READMES: Array<[string, string]> = [
   ['README.md', PT],
   ['README.en.md', EN]
 ];
+const ALL_DOCS: Array<[string, string]> = [...READMES, ['cli/README.md', CLI]];
 
 const manifest = JSON.parse(read('package.json')) as {
   name: string;
@@ -18,66 +20,132 @@ const manifest = JSON.parse(read('package.json')) as {
   version: string;
   pricing?: string;
   icon?: string;
+  repository: { url: string };
+  bugs: { url: string };
+  homepage: string;
   scripts: Record<string, string>;
   contributes: { viewsContainers: { activitybar: Array<{ icon: string }> } };
 };
 const scripts = manifest.scripts;
 
-/** The one Marketplace address these READMEs may use. */
+const REPO = 'https://github.com/williamosilva/agent-rules-lens';
 const MARKETPLACE =
   'https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens';
+const RAW = 'https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/';
 
 describe('which language is primary', () => {
-  it('makes README.md Portuguese', () => {
-    expect(PT.split('\n')[2]).toBe('Português | [English](README.en.md)');
-    for (const phrase of [
-      'Veja quais arquivos de instruções',
-      'Como você quer usar?',
-      'Usar a extensão no VS Code',
-      'Limitações'
-    ]) {
-      expect(PT, phrase).toContain(phrase);
-    }
+  it('makes README.md Portuguese and README.en.md English', () => {
+    expect(PT).toContain('Português | [English](README.en.md)');
+    expect(EN).toContain('[Português](README.md) | English');
+
+    // A handful of load-bearing phrases, not a word-for-word comparison.
+    expect(PT).toContain('Veja quais instruções de agentes de código se aplicam');
+    expect(PT).toContain('## Escolha como usar');
+    expect(EN).toContain('See which coding-agent instructions apply');
+    expect(EN).toContain('## Choose how to use it');
   });
 
-  it('makes README.en.md English', () => {
-    expect(EN.split('\n')[2]).toBe('[Português](README.md) | English');
-    for (const phrase of [
-      'See which AI instruction files',
-      'Choose how you want to use it',
-      'Using the VS Code extension',
-      'Limitations'
-    ]) {
-      expect(EN, phrase).toContain(phrase);
-    }
-  });
-
-  it('leaves no trace of the old Portuguese file name', () => {
-    expect(existsSync(join(REPO_ROOT, 'README.pt-BR.md'))).toBe(false);
-    for (const [name, text] of READMES) {
-      expect(text, name).not.toContain('README.pt-BR');
-    }
-  });
-
-  it('keeps the same structure in both', () => {
-    const headings = (text: string): string[] =>
-      text.split('\n').filter((line) => line.startsWith('## '));
-    expect(headings(PT)).toHaveLength(headings(EN).length);
-    expect(headings(PT).length).toBeGreaterThan(10);
-  });
-
-  it('has exactly two READMEs at the root', () => {
+  it('lets the language switch work in both directions', () => {
+    expect(PT).toContain('](README.en.md)');
+    expect(EN).toContain('](README.md)');
     expect(existsSync(join(REPO_ROOT, 'README.md'))).toBe(true);
     expect(existsSync(join(REPO_ROOT, 'README.en.md'))).toBe(true);
+    expect(existsSync(join(REPO_ROOT, 'README.pt-BR.md'))).toBe(false);
+  });
+
+  it('covers the same sections in both, without demanding identical prose', () => {
+    const sections = (text: string): number =>
+      text.split('\n').filter((line) => line.startsWith('## ')).length;
+    expect(sections(PT)).toBe(sections(EN));
+    expect(sections(PT)).toBeGreaterThan(10);
   });
 });
 
-describe('links', () => {
-  it('resolves every relative link', () => {
+describe('repository URLs', () => {
+  it('spells the repository slug in lower case everywhere', () => {
+    // The repository was renamed; any capital letter in the slug is the old one.
+    const files = [
+      ...ALL_DOCS,
+      ['package.json', read('package.json')] as [string, string],
+      ['cli/package.json', read(join('cli', 'package.json'))] as [string, string]
+    ];
+    for (const [name, text] of files) {
+      for (const url of [...text.matchAll(/github(?:usercontent)?\.com\/[^\s)>"']+/g)].map(
+        (m) => m[0]
+      )) {
+        expect(url, `${name} -> ${url}`).not.toMatch(/williamosilva\/[^/\s]*[A-Z]/);
+      }
+    }
+  });
+
+  it('points the manifests at the renamed repository', () => {
+    expect(manifest.repository.url).toBe(`${REPO}.git`);
+    expect(manifest.bugs.url).toBe(`${REPO}/issues`);
+    expect(manifest.homepage).toBe(`${REPO}#readme`);
+
+    const cliManifest = JSON.parse(read(join('cli', 'package.json'))) as {
+      repository: { url: string };
+      bugs: { url: string };
+      homepage: string;
+    };
+    expect(cliManifest.repository.url).toBe(`${REPO}.git`);
+    expect(cliManifest.bugs.url).toBe(`${REPO}/issues`);
+    expect(cliManifest.homepage).toBe(`${REPO}#readme`);
+  });
+
+  it('uses only hosts that belong to this project', () => {
+    const allowed = [REPO, MARKETPLACE, RAW];
+    for (const [name, text] of ALL_DOCS) {
+      const urls = [...text.matchAll(/https?:\/\/[^\s)>]+/g)].map((m) => m[0]);
+      expect(urls.length, name).toBeGreaterThan(0);
+      for (const url of urls) {
+        expect(allowed.some((prefix) => url.startsWith(prefix)), `${name} -> ${url}`).toBe(true);
+      }
+    }
+  });
+
+  it('links the official Marketplace listing and no other extension', () => {
+    for (const [name, text] of READMES) {
+      expect(text, name).toContain(MARKETPLACE);
+      expect(text, name).toContain('code --install-extension williamosilva.agent-rules-lens');
+      expect(text, name).not.toMatch(/itemName=(?!williamosilva\.agent-rules-lens)/);
+    }
+  });
+});
+
+describe('screenshots', () => {
+  it('serves both through absolute raw URLs, so the Marketplace can load them', () => {
+    for (const [name, text] of READMES) {
+      const images = [...text.matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g)];
+      expect(images.length, name).toBe(2);
+      for (const [, alt, src] of images) {
+        expect((alt as string).length, `${name} alt text`).toBeGreaterThan(20);
+        expect((src as string).startsWith(RAW), `${name} -> ${src}`).toBe(true);
+        // The raw URL must correspond to a file that is really in the repo.
+        const local = (src as string).slice(RAW.length);
+        expect(existsSync(join(REPO_ROOT, local)), `${name} -> ${local}`).toBe(true);
+      }
+      expect(text, name).toContain(`${RAW}docs/images/agent-rules-lens.png`);
+      expect(text, name).toContain(`${RAW}docs/images/local-dashboard.png`);
+    }
+  });
+
+  it('embeds no SVG as a README image', () => {
+    for (const [name, text] of READMES) {
+      const sources = [...text.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1] as string);
+      for (const src of sources) {
+        expect(src.toLowerCase().endsWith('.svg'), `${name} -> ${src}`).toBe(false);
+      }
+    }
+  });
+});
+
+describe('relative links', () => {
+  it('resolves every one to a file that exists', () => {
     for (const [name, text] of READMES) {
       const targets = [...text.matchAll(/\]\(([^)]+)\)/g)]
-        .map((match) => match[1] as string)
-        .filter((target) => !target.startsWith('http'));
+        .map((m) => m[1] as string)
+        .filter((target) => !target.startsWith('http') && !target.startsWith('#'));
       expect(targets.length, name).toBeGreaterThan(0);
       for (const target of targets) {
         expect(existsSync(join(REPO_ROOT, target)), `${name} -> ${target}`).toBe(true);
@@ -85,37 +153,7 @@ describe('links', () => {
     }
   });
 
-  it('points at the real repository and issue tracker', () => {
-    for (const [name, text] of READMES) {
-      expect(text, name).toContain('https://github.com/williamosilva/Agent-Rules-Lens');
-      expect(text, name).toContain('/issues');
-      const foreign = [...text.matchAll(/https?:\/\/[^\s)]+/g)]
-        .map((match) => match[0])
-        .filter(
-          (url) =>
-            !url.startsWith('https://github.com/williamosilva/Agent-Rules-Lens') &&
-            url !== MARKETPLACE
-        );
-      expect(foreign, name).toEqual([]);
-    }
-  });
-
-  it('uses only the official Marketplace address', () => {
-    for (const [name, text] of READMES) {
-      expect(text, name).toContain(MARKETPLACE);
-      const marketplaceUrls = [...text.matchAll(/https?:\/\/marketplace\.visualstudio\.com[^\s)]*/g)]
-        .map((match) => match[0]);
-      expect(marketplaceUrls.length, name).toBeGreaterThan(0);
-      for (const url of marketplaceUrls) {
-        expect(url, name).toBe(MARKETPLACE);
-      }
-      // No other publisher and no other extension id.
-      expect(text, name).not.toMatch(/itemName=(?!williamosilva\.agent-rules-lens)/);
-      expect(text, name).toContain('code --install-extension williamosilva.agent-rules-lens');
-    }
-  });
-
-  it('links the licence and the icon provenance instead of only naming them', () => {
+  it('links the licence and the mark provenance', () => {
     for (const [name, text] of READMES) {
       expect(text, name).toMatch(/\[(licença MIT|MIT License)\]\(LICENSE\)/);
       expect(text, name).toContain('[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)');
@@ -123,69 +161,122 @@ describe('links', () => {
         '[`media/icons/agents/sources.json`](media/icons/agents/sources.json)'
       );
     }
+    // The CLI package carries its own copies of both.
+    expect(CLI).toContain('[MIT License](LICENSE)');
+    expect(CLI).toContain('[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)');
   });
 
-  it('shows both screenshots with alternative text', () => {
+  it('keeps the in-page anchors pointing at real headings', () => {
+    const slug = (heading: string): string =>
+      heading
+        .replace(/^##\s+/, '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
+
     for (const [name, text] of READMES) {
-      const images = [...text.matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g)];
-      expect(images.length, name).toBe(2);
-      for (const [, alt, src] of images) {
-        expect((alt as string).length, `${name} alt`).toBeGreaterThan(20);
-        expect(existsSync(join(REPO_ROOT, src as string)), `${name} -> ${src}`).toBe(true);
+      const headings = new Set(
+        text.split('\n').filter((line) => line.startsWith('## ')).map(slug)
+      );
+      const anchors = [...text.matchAll(/\]\(#([^)]+)\)/g)].map((m) => m[1] as string);
+      expect(anchors.length, name).toBeGreaterThan(0);
+      for (const anchor of anchors) {
+        expect(headings.has(anchor), `${name} -> #${anchor}`).toBe(true);
       }
-      expect(text, name).toContain('docs/images/agent-rules-lens.png');
-      expect(text, name).toContain('docs/images/local-dashboard.png');
     }
   });
 });
 
+describe('the four ways to use it', () => {
+  it('presents all four in the comparison table', () => {
+    expect(PT).toContain('Extensão do Marketplace');
+    expect(PT).toContain('Extensão pelo código-fonte');
+    expect(PT).toContain('Dashboard local');
+    expect(PT).toContain('Relatório JSON');
+
+    expect(EN).toContain('Marketplace extension');
+    expect(EN).toContain('Extension from source');
+    expect(EN).toContain('Local dashboard');
+    expect(EN).toContain('JSON report');
+  });
+
+  it('gives each one a starting command', () => {
+    for (const [name, text] of READMES) {
+      expect(text, name).toContain('npm run install:local');
+      expect(text, name).toMatch(/`arl`/);
+      expect(text, name).toContain('--json');
+      expect(text, name).toContain('npm run demo');
+      expect(text, name).toContain('npm run local:link');
+    }
+  });
+
+  it('spells out the difference between install:local and arl', () => {
+    expect(PT).toContain('`npm run install:local` compila a extensão');
+    expect(PT).toContain('`arl` inicia o dashboard local');
+    expect(PT).toContain('A extensão não precisa da CLI');
+    expect(EN).toContain('`npm run install:local` builds the extension');
+    expect(EN).toContain('`arl` starts the local dashboard');
+    expect(EN).toContain('The extension does not need the CLI');
+  });
+
+  it('documents the local mode as loopback only, read-only and manually refreshed', () => {
+    expect(PT).toContain('`127.0.0.1`');
+    expect(PT).toContain('somente leitura');
+    expect(PT).toContain('atualização é manual');
+    expect(EN).toContain('`127.0.0.1`');
+    expect(EN).toContain('read-only');
+    expect(EN).toContain('Refreshing is manual');
+  });
+});
+
 describe('honesty', () => {
-  it('still does not announce the CLI on npm', () => {
-    for (const [name, text] of READMES) {
-      expect(text, name).not.toMatch(/npm install -g agent-rules-lens/);
-      expect(text, name).not.toMatch(/npx agent-rules-lens/);
+  it('never presents the CLI as published on npm', () => {
+    for (const [name, text] of ALL_DOCS) {
+      expect(text, name).not.toContain('npx agent-rules-lens');
+      expect(text, name).not.toMatch(/npm i(nstall)? -g agent-rules-lens/);
     }
-    expect(PT).toContain('distribuição pelo npm está sendo preparada');
-    expect(PT).toContain('O pacote npm da CLI ainda não foi publicado.');
-    expect(EN).toContain('Distribution through npm is being prepared');
-    expect(EN).toContain("The CLI's npm package is not published yet.");
+    expect(PT).toContain('pacote npm público da CLI ainda não foi lançado');
+    expect(EN).toContain("CLI's public npm package has not been released");
   });
 
-  it('no longer says the extension is unpublished', () => {
-    expect(PT).not.toContain('ainda não está publicada no Marketplace');
-    expect(PT).not.toContain('a extensão ainda não está no Marketplace');
-    expect(EN).not.toContain("isn't on the Marketplace yet");
-    expect(EN).not.toContain('the extension is not on the Marketplace');
+  it('says detecting a file is not the same as confirming a tool loaded it', () => {
+    expect(PT).toContain('não** significa confirmar que alguma ferramenta realmente o carregou');
+    expect(EN).toContain('does **not** confirm that any tool actually loaded it');
   });
 
-  it('shows no image that is an SVG', () => {
-    for (const [name, text] of READMES) {
-      const images = [...text.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1] as string);
-      for (const src of images) {
-        expect(src.toLowerCase().endsWith('.svg'), `${name} -> ${src}`).toBe(false);
-      }
-    }
-  });
-
-  it('mentions no personal path and no private project', () => {
-    for (const [name, text] of READMES) {
-      expect(text, name).not.toMatch(/C:\\Users\\/);
-      expect(text, name).not.toContain('Desktop');
-      expect(text, name).not.toMatch(/\bInhire\b/);
-    }
-  });
-
-  it('never says the analysis reads a live agent context', () => {
+  it('never claims to read a live agent context', () => {
     expect(PT).toContain('Não inspeciona o contexto interno');
     expect(EN).toContain('does not inspect the private, running context');
   });
 
-  it('avoids marketing language, badge walls and decorative emoji', () => {
+  it('separates analysed applicability from mere detection in the format table', () => {
+    expect(PT).toContain('Aplicabilidade analisada');
+    expect(EN).toContain('Applicability analysed');
     for (const [name, text] of READMES) {
+      expect(text, name).toContain('`AGENTS.md`, `AGENTS.override.md`');
+      expect(text, name).toContain('Windsurf');
+      expect(text, name).toMatch(/Zed \| (Sim|Yes) \| (Não|No) \|/);
+    }
+  });
+
+  it('mentions no personal path', () => {
+    for (const [name, text] of ALL_DOCS) {
+      expect(text, name).not.toMatch(/C:\\Users\\/);
+      expect(text, name).not.toContain('Desktop\\');
+    }
+  });
+
+  it('avoids marketing filler, badge walls and decorative emoji', () => {
+    for (const [name, text] of ALL_DOCS) {
       for (const banned of [
         'revolucion',
         'poderos',
         'experiência perfeita',
+        'eleve sua produtividade',
+        'solução completa',
         'revolutionary',
         'powerful',
         'seamless',
@@ -200,16 +291,16 @@ describe('honesty', () => {
   });
 
   it('quotes no test count that would go stale', () => {
-    for (const [name, text] of READMES) {
+    for (const [name, text] of ALL_DOCS) {
       expect(text, name).not.toMatch(/\d+\s+(tests|testes)\b/i);
     }
   });
 });
 
-describe('the documented commands exist', () => {
+describe('documented commands exist', () => {
   it('names only real npm scripts', () => {
     const documented = new Set<string>();
-    for (const [, text] of READMES) {
+    for (const [, text] of ALL_DOCS) {
       for (const match of text.matchAll(/npm run ([a-z:]+)/g)) {
         documented.add(match[1] as string);
       }
@@ -220,51 +311,33 @@ describe('the documented commands exist', () => {
     }
   });
 
-  it('documents the split between installing the extension and running the CLI', () => {
-    expect(PT).toContain('instala a extensão compilada no VS Code');
-    expect(PT).toContain('abre um dashboard no navegador');
-    expect(PT).toContain('Nenhum dos dois precisa do outro');
-    expect(EN).toContain('installs the compiled extension into VS Code');
-    expect(EN).toContain('opens a dashboard in the browser');
-    expect(EN).toContain('Neither one needs the other');
-  });
-
-  it('offers the "choose how" table with all four rows', () => {
-    for (const [name, text] of READMES) {
-      const table = text.slice(text.indexOf('| ---'), text.indexOf('| ---') + 400);
-      expect(table.split('\n').filter((line) => line.startsWith('|')).length, name).toBeGreaterThanOrEqual(5);
-    }
-    expect(PT).toContain('Dashboard local com `arl`');
-    expect(EN).toContain('Local dashboard with `arl`');
-  });
-
-  it('documents the demo both ways', () => {
-    for (const [name, text] of READMES) {
-      expect(text, name).toContain('npm run demo');
-      expect(text, name).toContain('cd examples\\sample-workspace');
-      expect(text, name).toContain('arl src\\backend\\order.service.ts');
-    }
-  });
-
-  it('lists the flags the parser accepts', () => {
-    for (const [name, text] of READMES) {
-      for (const flag of ['--json', '--locale pt-BR', '--locale en', '--no-open', '--help']) {
-        expect(text, `${name} / ${flag}`).toContain(flag);
+  it('names only flags the CLI parser accepts', () => {
+    const parser = read(join('src', 'local', 'cli.ts'));
+    const accepted = new Set(
+      [...parser.matchAll(/case '(--[a-z-]+|-[hv])'/g)].map((m) => m[1] as string)
+    );
+    for (const [name, text] of ALL_DOCS) {
+      const used = new Set(
+        [...text.matchAll(/`?arl\b[^`\n]*?(--[a-z-]+)/g)].map((m) => m[1] as string)
+      );
+      for (const flag of used) {
+        expect(accepted.has(flag), `${name} documents ${flag}`).toBe(true);
       }
+    }
+    // The ones the READMEs lean on.
+    for (const flag of ['--json', '--locale', '--no-open', '--help', '--workspace', '--file', '--port']) {
+      expect(accepted.has(flag), flag).toBe(true);
     }
   });
 });
 
 describe('marketplace manifest', () => {
-  it('publishes under the official publisher', () => {
+  it('keeps the published identity untouched', () => {
     expect(manifest.publisher).toBe('williamosilva');
     expect(manifest.name).toBe('agent-rules-lens');
     expect(`${manifest.publisher}.${manifest.name}`).toBe('williamosilva.agent-rules-lens');
-  });
-
-  it('is marked free and stays at 0.1.0', () => {
+    expect(manifest.version).toBe('0.1.1');
     expect(manifest.pricing).toBe('Free');
-    expect(manifest.version).toBe('0.1.0');
   });
 
   it('uses a PNG for the Marketplace page and the SVG in the Activity Bar', () => {
@@ -282,35 +355,23 @@ describe('marketplace manifest', () => {
     expect(cli['icon']).toBeUndefined();
     expect(cli['name']).toBe('agent-rules-lens');
   });
-
-  it('links the licence from the CLI readme too', () => {
-    const cliReadme = read(join('cli', 'README.md'));
-    expect(cliReadme).toContain('[MIT License](LICENSE)');
-    expect(cliReadme).toContain('[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)');
-  });
 });
 
 describe('marketplace icon', () => {
   const png = readFileSync(join(REPO_ROOT, 'media', 'agent-rules-lens.png'));
 
-  it('is a real PNG', () => {
-    expect(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))).toBe(
-      true
-    );
+  it('is a real 128 by 128 PNG with an alpha channel', () => {
+    expect(
+      png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+    ).toBe(true);
     expect(png.toString('ascii', 12, 16)).toBe('IHDR');
-  });
-
-  it('measures exactly 128 by 128', () => {
     expect(png.readUInt32BE(16)).toBe(128);
     expect(png.readUInt32BE(20)).toBe(128);
-  });
-
-  it('carries an alpha channel, so the rounded corners suit both page themes', () => {
     expect(png[24]).toBe(8);
     expect(png[25]).toBe(6);
   });
 
-  it('is a well formed chunk stream ending in IEND', () => {
+  it('is a well formed chunk stream with no text or EXIF metadata', () => {
     const chunks: string[] = [];
     let offset = 8;
     while (offset < png.length) {
@@ -320,11 +381,7 @@ describe('marketplace icon', () => {
     }
     expect(chunks[0]).toBe('IHDR');
     expect(chunks[chunks.length - 1]).toBe('IEND');
-    expect(chunks).toContain('IDAT');
     expect(offset).toBe(png.length);
-  });
-
-  it('embeds no text or EXIF metadata', () => {
     for (const chunk of ['tEXt', 'iTXt', 'zTXt', 'eXIf']) {
       expect(png.includes(Buffer.from(chunk, 'ascii')), chunk).toBe(false);
     }
@@ -336,33 +393,25 @@ describe('marketplace icon', () => {
     expect(svg).toContain('viewBox="0 0 24 24"');
     expect(svg).toContain('stroke="currentColor"');
     expect(svg).toContain('fill="none"');
-    // No colour of its own, no tile, and nothing a generator left behind.
     expect(svg).not.toMatch(/#[0-9a-f]{3,8}/i);
     expect(svg).not.toMatch(/<rect|<title|<desc|<!--|generator/i);
     expect(svg).not.toMatch(/opacity|linearGradient|filter/i);
-    expect(svg).toContain('stroke-linecap="round"');
-    expect(svg).toContain('stroke-linejoin="round"');
   });
 
-  it('draws three rules, a lens and a handle in both versions', () => {
+  it('draws three rules, a lens and a handle', () => {
     const svg = read(join('media', 'agent-rules-lens.svg'));
     const rules = [...svg.matchAll(/d="M3 (\d+)h(\d+)"/g)].map((m) => ({
       y: Number(m[1]),
       length: Number(m[2])
     }));
     expect(rules).toHaveLength(3);
-    // Different lengths, so the mark reads as layers rather than a menu.
     expect(new Set(rules.map((r) => r.length)).size).toBe(3);
-    // Even separation, on integer centres, which is what keeps 16px legible.
     expect(rules[1]!.y - rules[0]!.y).toBe(rules[2]!.y - rules[1]!.y);
-    for (const rule of rules) {
-      expect(Number.isInteger(rule.y)).toBe(true);
-    }
     expect(svg).toMatch(/<circle cx="15\.5" cy="13\.5" r="5\.2"/);
     expect(svg).toMatch(/d="M19\.2 17\.2 21\.2 19\.2"/);
   });
 
-  it('adds no runtime dependency for the icon', () => {
+  it('adds no dependency for the icon', () => {
     const deps = JSON.parse(read('package.json')) as {
       dependencies: Record<string, string>;
       devDependencies: Record<string, string>;

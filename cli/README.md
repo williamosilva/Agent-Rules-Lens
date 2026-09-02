@@ -22,14 +22,16 @@ generated for that run, reads only inside the directory you point it at, and
 makes no network requests. The dashboard is read-only: clicking a rule opens a
 preview in the page rather than an editor.
 
-There is also a VS Code extension that follows the file you have open. Both
-share the same catalog, parsers and resolver, so a rule cannot resolve
-differently between them.
+There is also a
+[VS Code extension](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens)
+that follows the file you have open in the editor. The two are independent —
+neither one needs the other installed — but they share the same catalog, parsers
+and resolver, so a rule cannot resolve differently between them.
 
 Interface in English and Brazilian Portuguese. Node 18 or newer.
 
 Documentation, the extension and the issue tracker:
-<https://github.com/williamosilva/Agent-Rules-Lens>
+<https://github.com/williamosilva/agent-rules-lens>
 
 Distributed under the [MIT License](LICENSE). Tool marks belong to their owners
 and are included for identification only; see

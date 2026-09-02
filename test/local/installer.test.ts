@@ -149,7 +149,7 @@ describe('vsix naming', () => {
       name: string;
       version: string;
     };
-    expect(vsixNameFor(manifest.name, manifest.version)).toBe('agent-rules-lens-0.1.0.vsix');
+    expect(vsixNameFor(manifest.name, manifest.version)).toBe('agent-rules-lens-0.1.1.vsix');
   });
 });
 

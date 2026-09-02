@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.1 — 2026-09-02
+
+Documentation and Marketplace metadata only. No functional change to the
+extension, the local dashboard or the CLI.
+
+- Fixed the screenshots that failed to load on the Marketplace page: both now
+  use absolute raw URLs instead of repository relative paths.
+- Reorganised the README in Portuguese and in English, so what the project does
+  and what it only detects are clear from the top.
+- Documented the ways to use it separately: the Marketplace extension, the
+  extension built from source, the local dashboard and the JSON report.
+- Updated every repository, issues and homepage URL to the lower case
+  `williamosilva/agent-rules-lens` slug after the repository was renamed.
+- Replaced the screenshots with captures that show the current icon.
+
 ## 0.1.0
 
 First release.

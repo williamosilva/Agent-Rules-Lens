@@ -1,18 +1,18 @@
 {
   "name": "agent-rules-lens",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "See which AI instruction files apply to a file in your project, from the terminal or a local dashboard.",
   "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/williamosilva/Agent-Rules-Lens.git",
+    "url": "https://github.com/williamosilva/agent-rules-lens.git",
     "directory": "cli"
   },
   "bugs": {
-    "url": "https://github.com/williamosilva/Agent-Rules-Lens/issues"
+    "url": "https://github.com/williamosilva/agent-rules-lens/issues"
   },
-  "homepage": "https://github.com/williamosilva/Agent-Rules-Lens#readme",
+  "homepage": "https://github.com/williamosilva/agent-rules-lens#readme",
   "engines": {
     "node": ">=18"
   },
