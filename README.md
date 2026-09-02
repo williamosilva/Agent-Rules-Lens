@@ -1,48 +1,48 @@
 # Agent Rules Lens
 
-Português | [English](README.en.md)
+[Português](README.md) | English
 
-Veja quais instruções de agentes de código se aplicam ao arquivo aberto — e por quê.
+See which coding-agent instructions apply to the file you have open — and why.
 
-[Instalar no VS Code](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens) · [Executar localmente](#dashboard-local-no-navegador) · [Abrir uma issue](https://github.com/williamosilva/agent-rules-lens/issues/new) · [Repositório](https://github.com/williamosilva/agent-rules-lens)
+[Install in VS Code](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens) · [Run it locally](#local-dashboard-in-the-browser) · [Open an issue](https://github.com/williamosilva/agent-rules-lens/issues/new) · [Repository](https://github.com/williamosilva/agent-rules-lens)
 
-![Sidebar do Agent Rules Lens no VS Code, listando por formato as instruções que se aplicam a um arquivo TypeScript aberto](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/agent-rules-lens.png)
+![The Agent Rules Lens sidebar in VS Code, listing by format the instructions that apply to an open TypeScript file](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/agent-rules-lens.png)
 
-Um mesmo projeto pode ter `AGENTS.md`, regras do Claude, regras do Cursor e instruções do Copilot ao mesmo tempo. Cada formato tem um escopo diferente: uns descem pela hierarquia de diretórios, outros dependem de um glob no frontmatter, outros valem para o repositório inteiro. Abra `src/backend/order.service.ts` e responder "qual desses arquivos se aplica agora?" já dá trabalho.
+One project can carry `AGENTS.md`, Claude rules, Cursor rules and Copilot instructions at the same time. Each format scopes differently: some cascade down the directory tree, some depend on a glob in the frontmatter, some cover the whole repository. Open `src/backend/order.service.ts` and answering "which of these applies right now?" is already work.
 
-O Agent Rules Lens reúne esses arquivos e mostra, para o arquivo escolhido, quais se aplicam e o motivo.
+Agent Rules Lens collects those files and shows, for the file you pick, which ones apply and the reason.
 
-## Escolha como usar
+## Choose how to use it
 
-| Opção | Quando usar | Como começar |
+| Option | When to use it | How to start |
 | --- | --- | --- |
-| Extensão do Marketplace | Uso diário no VS Code, acompanhando automaticamente o arquivo aberto | [Instalar pelo Marketplace](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens) |
-| Extensão pelo código-fonte | Desenvolver ou testar uma versão local da extensão | `npm run install:local` |
-| Dashboard local | Analisar um projeto no navegador, sem depender da extensão | `arl` |
-| Relatório JSON | Scripts, automações e integrações | `arl <arquivo> --json` |
+| Marketplace extension | Day-to-day work in VS Code, following the open file automatically | [Install from the Marketplace](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens) |
+| Extension from source | Developing or testing a local build of the extension | `npm run install:local` |
+| Local dashboard | Analysing a project in the browser, with no extension involved | `arl` |
+| JSON report | Scripts, automation and integrations | `arl <file> --json` |
 
-O que cada comando faz:
+What each command does:
 
-- `npm run install:local` compila a extensão, gera o `.vsix` e o instala no VS Code.
-- `arl` inicia o dashboard local para a pasta atual do terminal.
+- `npm run install:local` builds the extension, produces the `.vsix` and installs it into VS Code.
+- `arl` starts the local dashboard for whatever directory the terminal is in.
 
-São caminhos independentes. A extensão não precisa da CLI, e a CLI e o dashboard não precisam da extensão instalada.
+They are independent. The extension does not need the CLI, and the CLI and dashboard do not need the extension installed.
 
-O pacote npm público da CLI ainda não foi lançado, então `arl` vem do código-fonte: rode `npm run local:link` uma vez no repositório clonado e o comando passa a existir na sua máquina.
+The CLI's public npm package has not been released, so `arl` comes from the source: run `npm run local:link` once in your clone and the command becomes available on your machine.
 
-## Extensão do VS Code
+## The VS Code extension
 
-Pelo Marketplace, que é o caminho normal:
+From the Marketplace, which is the normal route:
 
 ```powershell
 code --install-extension williamosilva.agent-rules-lens
 ```
 
-Ou pela [página da extensão](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens).
+Or through the [extension page](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens).
 
-Depois de instalada, clique no ícone do Agent Rules Lens na Activity Bar. A sidebar acompanha o workspace aberto e o arquivo em foco: trocar de aba refaz a comparação sozinha. Clicar em uma regra abre o arquivo; clicar em um aviso vai até a linha indicada. O `PT | EN` do cabeçalho troca o idioma.
+Once installed, click the Agent Rules Lens icon in the Activity Bar. The sidebar follows the open workspace and the focused file, so switching tabs re-runs the comparison on its own. Clicking a rule opens the file; clicking a warning jumps to the line it reports. `PT | EN` in the header changes the language.
 
-Para desenvolver ou testar uma versão local da extensão:
+To develop or test a local build of the extension:
 
 ```powershell
 git clone https://github.com/williamosilva/agent-rules-lens.git
@@ -51,11 +51,11 @@ npm install
 npm run install:local
 ```
 
-Recarregue a janela depois (`Ctrl + Shift + P` → `Developer: Reload Window`). Isso instala a extensão compilada do seu clone e não tem relação com o dashboard local.
+Reload the window afterwards (`Ctrl + Shift + P` → `Developer: Reload Window`). That installs the extension compiled from your clone, and has nothing to do with the local dashboard.
 
-## Dashboard local no navegador
+## Local dashboard in the browser
 
-Configuração única, no repositório clonado:
+One-time setup, in your clone:
 
 ```powershell
 git clone https://github.com/williamosilva/agent-rules-lens.git
@@ -64,116 +64,116 @@ npm install
 npm run local:link
 ```
 
-Depois, no projeto que você quer analisar:
+Then, in the project you want to analyse:
 
 ```powershell
-cd C:\caminho\do\projeto
+cd C:\path\to\project
 arl
 ```
 
-![Dashboard local do Agent Rules Lens no navegador, com o seletor de arquivo à esquerda e a análise agrupada por formato à direita](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/local-dashboard.png)
+![The Agent Rules Lens local dashboard in a browser, with the file picker on the left and the analysis grouped by format on the right](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/local-dashboard.png)
 
-Exemplos que funcionam:
+Examples that work:
 
 ```powershell
-arl                          # analisa a pasta atual
-arl src/app.ts               # já abre com esse arquivo selecionado
-arl ..\outro-projeto         # analisa outro projeto
-arl src/app.ts --json        # imprime a análise e encerra
-arl --locale pt-BR           # interface em português
-arl --no-open                # não abre o navegador
+arl                          # analyse the current directory
+arl src/app.ts               # start with that file selected
+arl ..\other-project         # analyse another project
+arl src/app.ts --json        # print the analysis and exit
+arl --locale pt-BR           # interface in Portuguese
+arl --no-open                # do not open the browser
 arl --help
 ```
 
-O que vale saber:
+Worth knowing:
 
-- `arl` usa a pasta atual do terminal como projeto, então normalmente não é preciso informar nada.
-- Um arquivo pode ser passado direto para já abrir a análise selecionada.
-- O servidor escuta somente em `127.0.0.1` e exige um token gerado para aquela execução.
-- Os arquivos permanecem no seu computador. Nada é enviado para nenhum serviço.
-- O dashboard é somente leitura: clicar em uma regra abre uma pré-visualização na própria página, não um editor.
-- A atualização é manual — use **Atualizar arquivos** depois de mudar um arquivo de regras.
-- `Ctrl+C` encerra o servidor.
+- `arl` uses the terminal's current directory as the project, so there is usually nothing to pass.
+- A file can be given directly to open with the analysis already selected.
+- The server listens on `127.0.0.1` only and requires a token generated for that run.
+- Your files stay on your computer. Nothing is sent to any service.
+- The dashboard is read-only: clicking a rule opens a preview inside the page, not an editor.
+- Refreshing is manual — use **Refresh files** after changing a rule file.
+- `Ctrl+C` stops the server.
 
-Também existem `--workspace` e `--file` para quando o padrão não serve, e `--port` para fixar a porta.
+There is also `--workspace` and `--file` for when the default does not fit, and `--port` to pin the port.
 
-## Relatório JSON
+## JSON report
 
-Para scripts e automações, `--json` imprime a análise na saída padrão e encerra sem subir servidor:
+For scripts and automation, `--json` prints the analysis to stdout and exits without starting a server:
 
 ```powershell
 arl src/app.ts --json
 ```
 
-A saída traz `schemaVersion`, o nome do projeto, o arquivo analisado, um resumo, os grupos por formato, os avisos, as regras não aplicáveis, as configurações apenas detectadas e os candidatos. Todos os caminhos são relativos ao projeto.
+The output carries `schemaVersion`, the project name, the analysed file, a summary, the groups per format, the warnings, the non-applicable rules, the detected-only configuration and the candidates. Every path is relative to the project.
 
-## Demonstração
+## Demo
 
-Para ver o resultado sem usar um projeto seu:
+To see the result without using a project of your own:
 
 ```powershell
 npm run demo
 ```
 
-Ou, com o `arl` já disponível:
+Or, once `arl` is available:
 
 ```powershell
 cd examples\sample-workspace
 arl src\backend\order.service.ts
 ```
 
-O projeto de exemplo tem casos intencionais de `AGENTS.md`, `AGENTS.override.md`, Claude, Cursor e GitHub Copilot, além de um aviso de import ausente, uma configuração apenas detectada e um arquivo que parece instrução personalizada. Eles existem para mostrar cada situação de uma vez — um projeto real não precisa de nada disso.
+The example project holds deliberate cases of `AGENTS.md`, `AGENTS.override.md`, Claude, Cursor and GitHub Copilot, plus a missing-import warning, a detected-only configuration and a file that looks like a custom instruction. They are there to show every situation at once — a real project needs none of it.
 
-## O que ele afirma e o que apenas detecta
+## What it claims, and what it only detects
 
-Quando ele diz que uma regra se aplica, isso vem de um caminho documentado, de uma hierarquia de diretórios, de um glob ou de um metadado que ele sabe interpretar. Ele nunca deduz pelo nome do arquivo e nunca lê o texto da regra para julgar relevância.
+When it says a rule applies, that comes from a documented path, a directory hierarchy, a glob or a metadata field it knows how to interpret. It never guesses from the file name, and never reads a rule's prose to judge relevance.
 
-Um `typescript.md` sem o campo `paths` vale para todos os arquivos, inclusive os de Python. Uma regra do Cursor chamada `frontend.mdc` cujos globs apontam para `src/backend/**` vale para o backend. O nome não é evidência.
+A `typescript.md` with no `paths` field applies to every file, Python included. A Cursor rule named `frontend.mdc` whose globs point at `src/backend/**` applies to the backend. The name is not evidence.
 
-Detectar um arquivo **não** significa confirmar que alguma ferramenta realmente o carregou. Para os formatos apenas detectados, o Agent Rules Lens diz que reconheceu o arquivo e a qual ferramenta ele pertence — nada além disso.
+Detecting a file does **not** confirm that any tool actually loaded it. For detected-only formats, Agent Rules Lens says it recognised the file and which tool it belongs to — nothing more.
 
-E ele analisa os arquivos de configuração que estão no projeto. Não inspeciona o contexto interno e em execução do Claude, do Cursor, do Copilot ou de qualquer outro agente.
+And it analyses the configuration files present in the project. It does not inspect the private, running context of Claude, Cursor, Copilot or any other agent.
 
-## Formatos suportados
+## Supported formats
 
-| Formato | Detectado | Aplicabilidade analisada |
+| Format | Detected | Applicability analysed |
 | --- | ---: | ---: |
-| `AGENTS.md`, `AGENTS.override.md` | Sim | Sim |
-| Claude — `CLAUDE.md`, `CLAUDE.local.md`, `.claude/CLAUDE.md`, `.claude/rules/**/*.md` | Sim | Sim |
-| Cursor — `.cursor/rules/**/*.mdc` | Sim | Sim |
-| GitHub Copilot — `.github/copilot-instructions.md`, `.github/instructions/**/*.instructions.md` | Sim | Sim |
-| Gemini, Qwen | Sim | Não |
-| Windsurf, Cline, Roo Code, Continue | Sim | Não |
-| Kiro, Amazon Q Developer, Junie, Augment | Sim | Não |
-| Replit Agent, Qoder, CodeBuddy, Trae, Zed | Sim | Não |
-| Nomes escritos à mão, como `RULES.md` e `AI_RULES.md`, e arquivos em `.ai/rules/` | Como candidatos | Não |
+| `AGENTS.md`, `AGENTS.override.md` | Yes | Yes |
+| Claude — `CLAUDE.md`, `CLAUDE.local.md`, `.claude/CLAUDE.md`, `.claude/rules/**/*.md` | Yes | Yes |
+| Cursor — `.cursor/rules/**/*.mdc` | Yes | Yes |
+| GitHub Copilot — `.github/copilot-instructions.md`, `.github/instructions/**/*.instructions.md` | Yes | Yes |
+| Gemini, Qwen | Yes | No |
+| Windsurf, Cline, Roo Code, Continue | Yes | No |
+| Kiro, Amazon Q Developer, Junie, Augment | Yes | No |
+| Replit Agent, Qoder, CodeBuddy, Trae, Zed | Yes | No |
+| Hand-written names like `RULES.md` or `AI_RULES.md`, and files under `.ai/rules/` | As candidates | No |
 
-**Detectado** quer dizer que o arquivo foi reconhecido e atribuído a uma ferramenta. **Aplicabilidade analisada** quer dizer que as regras de resolução documentadas daquele formato estão implementadas, então a comparação com o arquivo aberto é real. Um formato apenas detectado fica fora da contagem principal.
+**Detected** means the file was recognised and attributed to a tool. **Applicability analysed** means that format's documented resolution rules are implemented, so the comparison against the open file is real. A detected-only format stays out of the main count.
 
-Definições de agentes, prompts e skills — `.github/agents/*.agent.md`, `.claude/agents/**`, `.github/prompts/*.prompt.md`, `.agents/skills/**/SKILL.md` — são reconhecidos justamente para nunca aparecerem como regras.
+Agent definitions, prompts and skills — `.github/agents/*.agent.md`, `.claude/agents/**`, `.github/prompts/*.prompt.md`, `.agents/skills/**/SKILL.md` — are recognised precisely so they are never listed as rules.
 
-## Significado dos estados
+## Status meanings
 
-| Estado | O que significa |
+| State | What it means |
 | --- | --- |
-| Aplicação automática | Corresponde ao arquivo aberto por uma regra documentada |
-| O agente decide | O agente avalia a relevância, a partir de uma `description` |
-| Somente manual | Carregado apenas quando você menciona explicitamente |
-| Não se aplica | A regra foi entendida, mas o escopo não cobre este arquivo |
-| Não foi possível determinar | Um campo que define a aplicabilidade está malformado |
-| Configuração inválida | O próprio arquivo está malformado |
-| Aplicabilidade não analisada | Configuração detectada: a ferramenta é conhecida, mas as regras de resolução dela não estão implementadas |
-| Carregamento não verificado | Candidato ou arquivo declarado pelo usuário: nenhum agente conhecido o carrega |
+| Automatic | Matches the open file through a documented rule |
+| Agent decides | The agent evaluates relevance, based on a `description` |
+| Manual only | Loaded only when you mention it explicitly |
+| Not applicable | The rule was understood, but its scope doesn't cover this file |
+| Cannot determine | A field that decides applicability is malformed |
+| Invalid configuration | The file itself is malformed |
+| Applicability not analyzed | Detected configuration: the tool is known, but its resolution rules are not implemented |
+| Loading not verified | A candidate or user-declared file: no agent is known to load it |
 
-Só as regras com *aplicação automática* entram na contagem e no total de tokens.
+Only *Automatic* rules reach the count and the token total.
 
 ## Tokens
 
-O número de tokens é uma estimativa grosseira: um token a cada quatro caracteres do corpo da regra, sem tokenizer de verdade. Serve para dar noção de tamanho, não para prever cobrança. E não é uma única janela de contexto — cada formato é lido pelo seu próprio agente, então os números por formato dizem mais do que a soma. Configurações detectadas e candidatos não entram nesse total.
+The token number is a rough estimate: one token per four characters of the rule body, with no real tokenizer involved. It gives a sense of size, not a prediction of billing. It also isn't a single context window — each format is read by its own agent, so the per-format numbers say more than the sum. Detected configuration and candidates contribute nothing.
 
-## Padrões personalizados
+## Custom patterns
 
-Se você guarda instruções em um arquivo que o catálogo não conhece, adicione o glob dele nas configurações do VS Code:
+If you keep instructions in a file the catalog doesn't know, add its glob in the VS Code settings:
 
 ```json
 {
@@ -184,50 +184,50 @@ Se você guarda instruções em um arquivo que o catálogo não conhece, adicion
 }
 ```
 
-Os arquivos correspondentes aparecem em *Possíveis instruções personalizadas*. A configuração apenas pede que esses arquivos sejam acompanhados; ela não faz o Claude, o Cursor nem nenhuma outra ferramenta carregá-los.
+Matching files appear under *Possible custom instructions*. The setting only asks for those files to be watched; it does not make Claude, Cursor or anything else load them.
 
-## Privacidade e segurança
+## Privacy and security
 
-Tudo roda localmente. Não há requisição de rede, telemetria nem envio de conteúdo para nenhum serviço.
+Everything runs locally. There are no network requests, no telemetry and no content sent to any service.
 
-A sidebar da extensão é uma Webview com uma Content-Security-Policy restritiva: `default-src 'none'`, scripts apenas com um nonce gerado a cada render, imagens apenas dos arquivos da própria extensão. As logos são empacotadas, não baixadas.
+The extension's sidebar is a webview under a restrictive Content-Security-Policy: `default-src 'none'`, scripts only under a per-render nonce, images only from the extension's own files. Tool marks are bundled, not fetched.
 
-O dashboard local escuta somente em `127.0.0.1`, exige um token gerado para aquela execução, e a página roda sob `default-src 'self'` sem `unsafe-inline` e sem `unsafe-eval`. O navegador nunca recebe um caminho absoluto: cada linha carrega um identificador opaco que só o servidor sabe resolver, sempre dentro do projeto informado.
+The local dashboard listens on `127.0.0.1` only, requires a token generated for that run, and the page runs under `default-src 'self'` with no `unsafe-inline` and no `unsafe-eval`. The browser never receives an absolute path: each row carries an opaque handle that only the server can resolve, always inside the project you pointed it at.
 
-## Limitações
+## Limitations
 
-- Projetos com várias pastas são analisados apenas na primeira.
-- Os formatos apenas detectados não têm aplicabilidade analisada, e arquivos candidatos não têm confirmação de que algum agente os carrega.
-- O dashboard local atualiza sob demanda. A extensão, essa sim, observa as mudanças sozinha.
-- O dashboard é somente leitura.
-- A pré-visualização recusa arquivos acima de 512 KB.
-- Diretórios acessados por symlink não são percorridos, então regras que existam apenas por um link não são vistas pelo modo local.
-- O idioma escolhido no dashboard vale para o servidor, então abas locais abertas ao mesmo tempo compartilham a mesma escolha.
-- As contagens de tokens são estimativas.
-- O pacote npm da CLI ainda não foi publicado.
-- E a ressalva principal: isto analisa configuração, não o contexto vivo que um agente montou. Os agentes também podem mudar a qualquer momento a forma como carregam instruções.
+- Multi-folder projects are analysed on the first folder only.
+- Detected-only formats have no applicability analysed, and candidate files carry no confirmation that any agent loads them.
+- The local dashboard refreshes on demand. The extension, on the other hand, watches for changes itself.
+- The dashboard is read-only.
+- The preview refuses files over 512 KB.
+- Directories reached through a symlink are not traversed, so rules that exist only behind a link are invisible to local mode.
+- The language chosen in the dashboard belongs to the server, so local tabs open at the same time share the same choice.
+- Token counts are estimates.
+- The CLI's npm package is not published yet.
+- And the main caveat: this analyses configuration, not the live context an agent assembled. Agents can also change how they load instructions at any time.
 
-## Feedback e problemas
+## Feedback and issues
 
-Encontrou um formato de instrução que deveria ser reconhecido, uma regra resolvida incorretamente ou algum problema na interface? [Abra uma issue](https://github.com/williamosilva/agent-rules-lens/issues/new).
+Found an instruction format that should be recognised, a rule that resolves incorrectly, or a problem in the interface? [Open an issue](https://github.com/williamosilva/agent-rules-lens/issues/new).
 
-Ao relatar, informe o agente ou ferramenta, o caminho relevante e o comportamento esperado. Não inclua instruções privadas, código proprietário, credenciais ou outros dados sensíveis do projeto.
+When reporting, include the agent or tool, the relevant path and the behaviour you expected. Do not include private instructions, proprietary code, credentials or other sensitive project data.
 
-## Desenvolvimento
+## Development
 
 ```powershell
-npm run check         # typecheck e testes
-npm run compile       # bundle da extensão
-npm run package       # gera o .vsix
-npm run local:build   # bundle do modo local
-npm run local:check   # testes do modo local
-npm run demo          # abre o dashboard no projeto de exemplo
+npm run check         # typecheck and tests
+npm run compile       # bundle the extension
+npm run package       # build the .vsix
+npm run local:build   # bundle the local mode
+npm run local:check   # local mode tests
+npm run demo          # open the dashboard on the example project
 ```
 
-O `F5` abre um Extension Development Host já apontado para `examples/sample-workspace`, que é onde ficam os exemplos de cada formato. Os casos mais difíceis usados pelos testes estão em `test/fixtures/`.
+`F5` opens an Extension Development Host already pointed at `examples/sample-workspace`, which is where the examples of each format live. The harder cases used by the tests are under `test/fixtures/`.
 
-## Licença e marcas
+## License and trademarks
 
-A extensão é distribuída sob a [licença MIT](LICENSE).
+The extension is distributed under the [MIT License](LICENSE).
 
-As logos pertencem aos seus proprietários e são usadas apenas para identificação. Este projeto não tem vínculo com nenhuma das ferramentas reconhecidas, nem é endossado ou patrocinado por elas. A origem, a licença e a data de obtenção de cada logo estão em [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) e em [`media/icons/agents/sources.json`](media/icons/agents/sources.json). Se você representa um desses projetos e deseja alterar algum asset ou crédito, [abra uma issue](https://github.com/williamosilva/agent-rules-lens/issues/new).
+The logos belong to their respective owners and are used only for identification. This project is not affiliated with, endorsed by, or sponsored by any of the recognized tools. The source, license, and retrieval date of each logo are documented in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and [`media/icons/agents/sources.json`](media/icons/agents/sources.json). If you represent one of these projects and would like an asset or credit changed, [open an issue](https://github.com/williamosilva/agent-rules-lens/issues/new).
