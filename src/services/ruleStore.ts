@@ -1,11 +1,10 @@
 import * as vscode from 'vscode';
 import type { DetectedArtifact, ParsedRule, RuleAnalysis, RuleWarning } from '../domain/types';
 import { relativeToRoot } from '../utils/paths';
-import { collectImportTargets, validateClaudeImports } from './ruleDiagnostics';
+import { VsCodeWorkspaceAccess } from '../adapters/vscodeWorkspaceAccess';
 import { validateUserPatterns } from './artifactClassifier';
-import { discoverRuleFiles, workspaceFileExists } from './ruleDiscovery';
-import { parseRuleFile } from './ruleParser';
 import { analyzeRules } from './ruleResolver';
+import { loadWorkspaceRules } from './workspaceAnalysis';
 
 export const CUSTOM_PATTERNS_SETTING = 'agentRulesLens.customInstructionPatterns';
 
@@ -46,8 +45,7 @@ interface ActiveTarget {
 export class RuleStore implements vscode.Disposable {
   private parsed: ParsedRule[] = [];
   private artifacts: DetectedArtifact[] = [];
-  private discoveryWarnings: RuleWarning[] = [];
-  private importWarnings: RuleWarning[] = [];
+  private loadWarnings: RuleWarning[] = [];
   private loading = false;
   private reloadQueued = false;
   private lastRejectionSignature = '';
@@ -109,7 +107,7 @@ export class RuleStore implements vscode.Disposable {
       analysis: analyzeRules(this.parsed, {
         ...(target.activeFile !== undefined ? { activeFile: target.activeFile } : {}),
         activeFileOutsideWorkspace: target.outsideWorkspace,
-        extraWarnings: [...this.discoveryWarnings, ...this.importWarnings]
+        extraWarnings: this.loadWarnings
       })
     });
   }
@@ -161,18 +159,19 @@ export class RuleStore implements vscode.Disposable {
     if (folder === undefined) {
       this.parsed = [];
       this.artifacts = [];
-      this.discoveryWarnings = [];
-      this.importWarnings = [];
+      this.loadWarnings = [];
       this.resolve();
       return;
     }
 
     try {
-      const discovery = await discoverRuleFiles(folder, this.userPatterns());
-      this.parsed = discovery.files.map(parseRuleFile);
-      this.artifacts = discovery.artifacts;
-      this.discoveryWarnings = discovery.warnings;
-      this.importWarnings = await this.checkImports(folder);
+      const loaded = await loadWorkspaceRules(
+        new VsCodeWorkspaceAccess(folder),
+        this.userPatterns()
+      );
+      this.parsed = loaded.rules;
+      this.artifacts = loaded.artifacts;
+      this.loadWarnings = loaded.warnings;
     } catch (error) {
       const message = error instanceof Error ? error.stack ?? error.message : String(error);
       this.reportError(`Rule discovery failed: ${message}`);
@@ -181,27 +180,6 @@ export class RuleStore implements vscode.Disposable {
     this.resolve();
   }
 
-  private async checkImports(folder: vscode.WorkspaceFolder): Promise<RuleWarning[]> {
-    const targets = new Set<string>();
-    for (const rule of this.parsed) {
-      for (const target of collectImportTargets(rule.relativePath, rule.imports)) {
-        targets.add(target);
-      }
-    }
-
-    const existing = new Set<string>();
-    await Promise.all(
-      [...targets].map(async (target) => {
-        if (await workspaceFileExists(folder, target)) {
-          existing.add(target);
-        }
-      })
-    );
-
-    return this.parsed.flatMap((rule) =>
-      validateClaudeImports(rule, rule.imports, (target) => existing.has(target))
-    );
-  }
 
   private publish(state: RuleStoreState): void {
     this.state = state;

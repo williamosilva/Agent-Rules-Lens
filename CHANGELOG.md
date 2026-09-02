@@ -21,7 +21,14 @@ First release.
   own.
 - Status bar summary, and automatic refresh when the editor, a rule file or the
   setting changes.
+- A local mode that runs the same analysis outside VS Code. After
+  `npm run local:link`, `arl` opens a panel on `127.0.0.1` for whatever
+  directory the terminal is in, and `arl <file> --json` prints the analysis for
+  scripts. It shares the extension's catalog, parsers, resolver and view model.
+- `npm run install:local` builds the VSIX and installs it through the VS Code
+  CLI, so the sidebar is available in every workspace after a window reload.
 
 Known limitations: multi-folder workspaces are analysed on their first folder
-only, and the extension reads configuration from disk rather than the live
-context an agent assembled.
+only, the local panel refreshes on demand rather than watching the filesystem,
+and the analysis reads configuration from disk rather than the live context an
+agent assembled.

@@ -92,6 +92,9 @@ export class RulesWebviewProvider implements vscode.WebviewViewProvider {
   private buildHtml(webview: vscode.Webview, mediaUri: vscode.Uri): string {
     const nonce = createNonce();
     const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(mediaUri, 'rules.css'));
+    const rendererUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(mediaUri, 'shared', 'rulesRenderer.js')
+    );
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(mediaUri, 'rules.js'));
     const csp = [
       "default-src 'none'",
@@ -115,6 +118,7 @@ export class RulesWebviewProvider implements vscode.WebviewViewProvider {
   </head>
   <body>
     <div id="root"></div>
+    <script nonce="${nonce}" src="${rendererUri.toString()}"></script>
     <script nonce="${nonce}" src="${scriptUri.toString()}"></script>
   </body>
 </html>`;

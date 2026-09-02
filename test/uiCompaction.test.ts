@@ -96,14 +96,14 @@ describe('marks sit on the section heading, not on every row', () => {
       }
     }
     const rendered = readFileSync(
-      join(__dirname, '..', 'media', 'rules.js'),
+      join(__dirname, '..', 'media', 'shared', 'rulesRenderer.js'),
       'utf8'
     );
     // ruleButton must not call icon(); artifactButton and summary must.
-    const ruleButton = /function ruleButton\(rule\)\s*\{[\s\S]*?\n  \}/.exec(rendered);
+    const ruleButton = /function ruleButton\(rule\)\s*\{[\s\S]*?\n    \}/.exec(rendered);
     expect(ruleButton).not.toBeNull();
     expect(ruleButton?.[0]).not.toContain('icon(');
-    const artifactButton = /function artifactButton\(artifact\)\s*\{[\s\S]*?\n  \}/.exec(rendered);
+    const artifactButton = /function artifactButton\(artifact\)\s*\{[\s\S]*?\n    \}/.exec(rendered);
     expect(artifactButton?.[0]).toContain('icon(artifact.iconId)');
     expect(rendered).toContain('node.appendChild(icon(iconId))');
   });
@@ -318,8 +318,11 @@ describe('changing language changes nothing but words', () => {
     for (const section of en.sections) {
       expect(section.expanded, section.label).toBe(true);
     }
-    const rendered = readFileSync(join(__dirname, '..', 'media', 'rules.js'), 'utf8');
-    expect(rendered).toContain("'section:warnings',\n          model.warningsLabel,");
+    const rendered = readFileSync(
+      join(__dirname, '..', 'media', 'shared', 'rulesRenderer.js'),
+      'utf8'
+    );
+    expect(rendered).toMatch(/'section:warnings',\s*model\.warningsLabel,/);
     // The three secondary lists pass `false` as their default expanded flag.
     expect(rendered).toMatch(/'section:not-applicable',[\s\S]{0,120}false,/);
     expect(rendered).toMatch(/'section:detected',[\s\S]{0,120}false,/);
