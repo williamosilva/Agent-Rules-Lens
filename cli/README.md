@@ -31,5 +31,6 @@ Interface in English and Brazilian Portuguese. Node 18 or newer.
 Documentation, the extension and the issue tracker:
 <https://github.com/williamosilva/Agent-Rules-Lens>
 
-MIT licensed. Tool marks belong to their owners and are included for
-identification only; see `THIRD_PARTY_NOTICES.md`.
+Distributed under the [MIT License](LICENSE). Tool marks belong to their owners
+and are included for identification only; see
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

@@ -4,7 +4,9 @@
   "description": "See which AI coding instructions apply to the file you are editing.",
   "version": "0.1.0",
   "license": "MIT",
-  "publisher": "agent-rules-lens",
+  "publisher": "williamosilva",
+  "pricing": "Free",
+  "icon": "media/agent-rules-lens.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/williamosilva/Agent-Rules-Lens.git"

@@ -40,7 +40,15 @@ Nenhum dos dois precisa do outro.
 
 ## Usar a extensão no VS Code
 
-Ela ainda não está publicada no Marketplace, então a instalação sai do repositório:
+[Instalar pelo VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens)
+
+Ou, pelo terminal:
+
+```powershell
+code --install-extension williamosilva.agent-rules-lens
+```
+
+Para trabalhar a partir do código, dá para compilar e instalar o `.vsix` localmente:
 
 ```powershell
 git clone https://github.com/williamosilva/Agent-Rules-Lens.git
@@ -49,14 +57,14 @@ npm install
 npm run install:local
 ```
 
-Depois, no VS Code:
+Nesse caso, recarregue a janela do VS Code depois:
 
 ```text
 Ctrl + Shift + P
 Developer: Reload Window
 ```
 
-A partir daí a sidebar fica disponível em qualquer projeto que você abrir. Clique no ícone do Agent Rules Lens na Activity Bar: ela acompanha o arquivo em foco, então trocar de aba refaz a comparação. Clicar em uma regra abre o arquivo; clicar em um aviso vai até a linha indicada. O `PT | EN` do cabeçalho troca o idioma.
+De qualquer uma das formas, a sidebar fica disponível em qualquer projeto que você abrir. Clique no ícone do Agent Rules Lens na Activity Bar: ela acompanha o arquivo em foco, então trocar de aba refaz a comparação. Clicar em uma regra abre o arquivo; clicar em um aviso vai até a linha indicada. O `PT | EN` do cabeçalho troca o idioma.
 
 ## Usar o dashboard local no navegador
 
@@ -188,7 +196,7 @@ O dashboard local escuta somente em `127.0.0.1`, exige um token gerado para aque
 - Diretórios acessados por symlink não são percorridos, então regras que existam apenas por um link não são vistas pelo modo local.
 - O idioma escolhido no dashboard vale para o servidor, então abas locais abertas ao mesmo tempo compartilham a mesma escolha.
 - As contagens de tokens são estimativas.
-- O pacote npm ainda não foi publicado, e a extensão ainda não está no Marketplace.
+- O pacote npm da CLI ainda não foi publicado.
 - E a ressalva principal: isto analisa configuração, não o contexto vivo que um agente montou. Os agentes também podem mudar a qualquer momento a forma como carregam instruções.
 
 ## Feedback e problemas
@@ -212,6 +220,6 @@ O `F5` abre um Extension Development Host já apontado para `examples/sample-wor
 
 ## Licença e marcas
 
-A extensão usa a licença MIT; veja o arquivo `LICENSE`.
+A extensão é distribuída sob a [licença MIT](LICENSE).
 
-As logos pertencem aos seus proprietários e são usadas apenas para identificação. Este projeto não tem vínculo com nenhuma das ferramentas reconhecidas, nem é endossado ou patrocinado por elas. A origem, a licença e a data de obtenção de cada logo estão em [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) e em `media/icons/agents/sources.json`. Se você representa um desses projetos e deseja alterar algum asset ou crédito, [abra uma issue](https://github.com/williamosilva/Agent-Rules-Lens/issues/new).
+As logos pertencem aos seus proprietários e são usadas apenas para identificação. Este projeto não tem vínculo com nenhuma das ferramentas reconhecidas, nem é endossado ou patrocinado por elas. A origem, a licença e a data de obtenção de cada logo estão em [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) e em [`media/icons/agents/sources.json`](media/icons/agents/sources.json). Se você representa um desses projetos e deseja alterar algum asset ou crédito, [abra uma issue](https://github.com/williamosilva/Agent-Rules-Lens/issues/new).

@@ -40,7 +40,15 @@ Neither one needs the other.
 
 ## Using the VS Code extension
 
-It isn't on the Marketplace yet, so it installs from the repository:
+[Install from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens)
+
+Or from the terminal:
+
+```powershell
+code --install-extension williamosilva.agent-rules-lens
+```
+
+To work from the source, you can build and install the `.vsix` locally:
 
 ```powershell
 git clone https://github.com/williamosilva/Agent-Rules-Lens.git
@@ -49,14 +57,14 @@ npm install
 npm run install:local
 ```
 
-Then, in VS Code:
+In that case, reload the VS Code window afterwards:
 
 ```text
 Ctrl + Shift + P
 Developer: Reload Window
 ```
 
-From then on the sidebar is available in any project you open. Click the Agent Rules Lens icon in the Activity Bar: it follows whichever file is focused, so switching tabs re-runs the comparison. Clicking a rule opens the file; clicking a warning jumps to the line it reports. `PT | EN` in the header changes the language.
+Either way, the sidebar is available in any project you open. Click the Agent Rules Lens icon in the Activity Bar: it follows whichever file is focused, so switching tabs re-runs the comparison. Clicking a rule opens the file; clicking a warning jumps to the line it reports. `PT | EN` in the header changes the language.
 
 ## Using the local dashboard in the browser
 
@@ -188,7 +196,7 @@ The local dashboard listens on `127.0.0.1` only, requires a token generated for 
 - Directories reached through a symlink are not traversed, so rules that exist only behind a link are invisible to local mode.
 - The language chosen in the dashboard belongs to the server, so local tabs open at the same time share the same choice.
 - Token counts are estimates.
-- The npm package is not published yet, and the extension is not on the Marketplace yet.
+- The CLI's npm package is not published yet.
 - And the main caveat: this analyses configuration, not the live context an agent assembled. Agents can also change how they load instructions at any time.
 
 ## Feedback and issues
@@ -212,6 +220,6 @@ npm run demo          # open the dashboard on the sample workspace
 
 ## License and trademarks
 
-The extension is MIT licensed; see `LICENSE`.
+The extension is distributed under the [MIT License](LICENSE).
 
-Tool marks belong to their owners and are used for identification only. This project is not affiliated with, endorsed by or sponsored by any of the tools it recognises. Each mark's source, licence and retrieval date is recorded in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and in `media/icons/agents/sources.json`. If you represent one of these projects and want an asset or credit changed, [open an issue](https://github.com/williamosilva/Agent-Rules-Lens/issues/new).
+The logos belong to their respective owners and are used only for identification. This project is not affiliated with, endorsed by, or sponsored by any of the recognized tools. The source, license, and retrieval date of each logo are documented in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) and [`media/icons/agents/sources.json`](media/icons/agents/sources.json). If you represent one of these projects and would like an asset or credit changed, [open an issue](https://github.com/williamosilva/Agent-Rules-Lens/issues/new).

@@ -12,9 +12,20 @@ const READMES: Array<[string, string]> = [
   ['README.en.md', EN]
 ];
 
-const scripts = (
-  JSON.parse(read('package.json')) as { scripts: Record<string, string> }
-).scripts;
+const manifest = JSON.parse(read('package.json')) as {
+  name: string;
+  publisher: string;
+  version: string;
+  pricing?: string;
+  icon?: string;
+  scripts: Record<string, string>;
+  contributes: { viewsContainers: { activitybar: Array<{ icon: string }> } };
+};
+const scripts = manifest.scripts;
+
+/** The one Marketplace address these READMEs may use. */
+const MARKETPLACE =
+  'https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens';
 
 describe('which language is primary', () => {
   it('makes README.md Portuguese', () => {
@@ -80,8 +91,37 @@ describe('links', () => {
       expect(text, name).toContain('/issues');
       const foreign = [...text.matchAll(/https?:\/\/[^\s)]+/g)]
         .map((match) => match[0])
-        .filter((url) => !url.startsWith('https://github.com/williamosilva/Agent-Rules-Lens'));
+        .filter(
+          (url) =>
+            !url.startsWith('https://github.com/williamosilva/Agent-Rules-Lens') &&
+            url !== MARKETPLACE
+        );
       expect(foreign, name).toEqual([]);
+    }
+  });
+
+  it('uses only the official Marketplace address', () => {
+    for (const [name, text] of READMES) {
+      expect(text, name).toContain(MARKETPLACE);
+      const marketplaceUrls = [...text.matchAll(/https?:\/\/marketplace\.visualstudio\.com[^\s)]*/g)]
+        .map((match) => match[0]);
+      expect(marketplaceUrls.length, name).toBeGreaterThan(0);
+      for (const url of marketplaceUrls) {
+        expect(url, name).toBe(MARKETPLACE);
+      }
+      // No other publisher and no other extension id.
+      expect(text, name).not.toMatch(/itemName=(?!williamosilva\.agent-rules-lens)/);
+      expect(text, name).toContain('code --install-extension williamosilva.agent-rules-lens');
+    }
+  });
+
+  it('links the licence and the icon provenance instead of only naming them', () => {
+    for (const [name, text] of READMES) {
+      expect(text, name).toMatch(/\[(licença MIT|MIT License)\]\(LICENSE\)/);
+      expect(text, name).toContain('[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)');
+      expect(text, name).toContain(
+        '[`media/icons/agents/sources.json`](media/icons/agents/sources.json)'
+      );
     }
   });
 
@@ -100,16 +140,31 @@ describe('links', () => {
 });
 
 describe('honesty', () => {
-  it('claims no published package', () => {
+  it('still does not announce the CLI on npm', () => {
     for (const [name, text] of READMES) {
       expect(text, name).not.toMatch(/npm install -g agent-rules-lens/);
       expect(text, name).not.toMatch(/npx agent-rules-lens/);
-      expect(text, name).not.toMatch(/marketplace\.visualstudio\.com/i);
     }
-    expect(PT).toContain('ainda não está publicada no Marketplace');
     expect(PT).toContain('distribuição pelo npm está sendo preparada');
-    expect(EN).toContain("isn't on the Marketplace yet");
+    expect(PT).toContain('O pacote npm da CLI ainda não foi publicado.');
     expect(EN).toContain('Distribution through npm is being prepared');
+    expect(EN).toContain("The CLI's npm package is not published yet.");
+  });
+
+  it('no longer says the extension is unpublished', () => {
+    expect(PT).not.toContain('ainda não está publicada no Marketplace');
+    expect(PT).not.toContain('a extensão ainda não está no Marketplace');
+    expect(EN).not.toContain("isn't on the Marketplace yet");
+    expect(EN).not.toContain('the extension is not on the Marketplace');
+  });
+
+  it('shows no image that is an SVG', () => {
+    for (const [name, text] of READMES) {
+      const images = [...text.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1] as string);
+      for (const src of images) {
+        expect(src.toLowerCase().endsWith('.svg'), `${name} -> ${src}`).toBe(false);
+      }
+    }
   });
 
   it('mentions no personal path and no private project', () => {
@@ -196,6 +251,126 @@ describe('the documented commands exist', () => {
       for (const flag of ['--json', '--locale pt-BR', '--locale en', '--no-open', '--help']) {
         expect(text, `${name} / ${flag}`).toContain(flag);
       }
+    }
+  });
+});
+
+describe('marketplace manifest', () => {
+  it('publishes under the official publisher', () => {
+    expect(manifest.publisher).toBe('williamosilva');
+    expect(manifest.name).toBe('agent-rules-lens');
+    expect(`${manifest.publisher}.${manifest.name}`).toBe('williamosilva.agent-rules-lens');
+  });
+
+  it('is marked free and stays at 0.1.0', () => {
+    expect(manifest.pricing).toBe('Free');
+    expect(manifest.version).toBe('0.1.0');
+  });
+
+  it('uses a PNG for the Marketplace page and the SVG in the Activity Bar', () => {
+    expect(manifest.icon).toBe('media/agent-rules-lens.png');
+    expect(manifest.icon?.toLowerCase().endsWith('.svg')).toBe(false);
+    expect(manifest.contributes.viewsContainers.activitybar[0]?.icon).toBe(
+      'media/agent-rules-lens.svg'
+    );
+  });
+
+  it('keeps the VS Code publisher out of the CLI package', () => {
+    const cli = JSON.parse(read(join('cli', 'package.json'))) as Record<string, unknown>;
+    expect(cli['publisher']).toBeUndefined();
+    expect(cli['pricing']).toBeUndefined();
+    expect(cli['icon']).toBeUndefined();
+    expect(cli['name']).toBe('agent-rules-lens');
+  });
+
+  it('links the licence from the CLI readme too', () => {
+    const cliReadme = read(join('cli', 'README.md'));
+    expect(cliReadme).toContain('[MIT License](LICENSE)');
+    expect(cliReadme).toContain('[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)');
+  });
+});
+
+describe('marketplace icon', () => {
+  const png = readFileSync(join(REPO_ROOT, 'media', 'agent-rules-lens.png'));
+
+  it('is a real PNG', () => {
+    expect(png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))).toBe(
+      true
+    );
+    expect(png.toString('ascii', 12, 16)).toBe('IHDR');
+  });
+
+  it('measures exactly 128 by 128', () => {
+    expect(png.readUInt32BE(16)).toBe(128);
+    expect(png.readUInt32BE(20)).toBe(128);
+  });
+
+  it('carries an alpha channel, so the rounded corners suit both page themes', () => {
+    expect(png[24]).toBe(8);
+    expect(png[25]).toBe(6);
+  });
+
+  it('is a well formed chunk stream ending in IEND', () => {
+    const chunks: string[] = [];
+    let offset = 8;
+    while (offset < png.length) {
+      const length = png.readUInt32BE(offset);
+      chunks.push(png.toString('ascii', offset + 4, offset + 8));
+      offset += 12 + length;
+    }
+    expect(chunks[0]).toBe('IHDR');
+    expect(chunks[chunks.length - 1]).toBe('IEND');
+    expect(chunks).toContain('IDAT');
+    expect(offset).toBe(png.length);
+  });
+
+  it('embeds no text or EXIF metadata', () => {
+    for (const chunk of ['tEXt', 'iTXt', 'zTXt', 'eXIf']) {
+      expect(png.includes(Buffer.from(chunk, 'ascii')), chunk).toBe(false);
+    }
+    expect(png.includes(Buffer.from(REPO_ROOT, 'utf8'))).toBe(false);
+  });
+
+  it('keeps the Activity Bar mark monochrome and sized for 24px', () => {
+    const svg = read(join('media', 'agent-rules-lens.svg'));
+    expect(svg).toContain('viewBox="0 0 24 24"');
+    expect(svg).toContain('stroke="currentColor"');
+    expect(svg).toContain('fill="none"');
+    // No colour of its own, no tile, and nothing a generator left behind.
+    expect(svg).not.toMatch(/#[0-9a-f]{3,8}/i);
+    expect(svg).not.toMatch(/<rect|<title|<desc|<!--|generator/i);
+    expect(svg).not.toMatch(/opacity|linearGradient|filter/i);
+    expect(svg).toContain('stroke-linecap="round"');
+    expect(svg).toContain('stroke-linejoin="round"');
+  });
+
+  it('draws three rules, a lens and a handle in both versions', () => {
+    const svg = read(join('media', 'agent-rules-lens.svg'));
+    const rules = [...svg.matchAll(/d="M3 (\d+)h(\d+)"/g)].map((m) => ({
+      y: Number(m[1]),
+      length: Number(m[2])
+    }));
+    expect(rules).toHaveLength(3);
+    // Different lengths, so the mark reads as layers rather than a menu.
+    expect(new Set(rules.map((r) => r.length)).size).toBe(3);
+    // Even separation, on integer centres, which is what keeps 16px legible.
+    expect(rules[1]!.y - rules[0]!.y).toBe(rules[2]!.y - rules[1]!.y);
+    for (const rule of rules) {
+      expect(Number.isInteger(rule.y)).toBe(true);
+    }
+    expect(svg).toMatch(/<circle cx="15\.5" cy="13\.5" r="5\.2"/);
+    expect(svg).toMatch(/d="M19\.2 17\.2 21\.2 19\.2"/);
+  });
+
+  it('adds no runtime dependency for the icon', () => {
+    const deps = JSON.parse(read('package.json')) as {
+      dependencies: Record<string, string>;
+      devDependencies: Record<string, string>;
+    };
+    expect(Object.keys(deps.dependencies).sort()).toEqual(['gray-matter', 'minimatch']);
+    for (const forbidden of ['sharp', 'canvas', 'jimp', 'svg2png', 'puppeteer', 'playwright']) {
+      expect(deps.dependencies[forbidden], forbidden).toBeUndefined();
+      expect(deps.devDependencies[forbidden], forbidden).toBeUndefined();
     }
   });
 });
