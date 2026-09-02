@@ -1,12 +1,12 @@
 # Agent Rules Lens
 
-[Português](README.md) | English
+English | [Português](README.pt-BR.md)
 
 See which coding-agent instructions apply to the file you have open — and why.
 
 [Install in VS Code](https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens) · [Run it locally](#local-dashboard-in-the-browser) · [Open an issue](https://github.com/williamosilva/agent-rules-lens/issues/new) · [Repository](https://github.com/williamosilva/agent-rules-lens)
 
-![The Agent Rules Lens sidebar in VS Code, listing by format the instructions that apply to an open TypeScript file](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/agent-rules-lens.png)
+![The Agent Rules Lens sidebar in VS Code, listing by format the instructions that apply to an open TypeScript file](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/agent-rules-lens-en.png)
 
 One project can carry `AGENTS.md`, Claude rules, Cursor rules and Copilot instructions at the same time. Each format scopes differently: some cascade down the directory tree, some depend on a glob in the frontmatter, some cover the whole repository. Open `src/backend/order.service.ts` and answering "which of these applies right now?" is already work.
 
@@ -71,7 +71,7 @@ cd C:\path\to\project
 arl
 ```
 
-![The Agent Rules Lens local dashboard in a browser, with the file picker on the left and the analysis grouped by format on the right](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/local-dashboard.png)
+![The Agent Rules Lens local dashboard in a browser, with the file picker on the left and the analysis grouped by format on the right](https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/docs/images/local-dashboard-en.png)
 
 Examples that work:
 

@@ -2,7 +2,7 @@
   "name": "agent-rules-lens",
   "displayName": "Agent Rules Lens",
   "description": "See which AI coding instructions apply to the file you are editing.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "publisher": "williamosilva",
   "pricing": "Free",

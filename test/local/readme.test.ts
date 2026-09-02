@@ -5,12 +5,14 @@ import { describe, expect, it } from 'vitest';
 const REPO_ROOT = resolve(__dirname, '..', '..');
 const read = (name: string): string => readFileSync(join(REPO_ROOT, name), 'utf8');
 
-const PT = read('README.md');
-const EN = read('README.en.md');
+// English is the primary README, because it is the one GitHub shows first and
+// the one vsce packages for the Marketplace listing.
+const EN = read('README.md');
+const PT = read('README.pt-BR.md');
 const CLI = read(join('cli', 'README.md'));
 const READMES: Array<[string, string]> = [
-  ['README.md', PT],
-  ['README.en.md', EN]
+  ['README.md', EN],
+  ['README.pt-BR.md', PT]
 ];
 const ALL_DOCS: Array<[string, string]> = [...READMES, ['cli/README.md', CLI]];
 
@@ -33,24 +35,43 @@ const MARKETPLACE =
   'https://marketplace.visualstudio.com/items?itemName=williamosilva.agent-rules-lens';
 const RAW = 'https://raw.githubusercontent.com/williamosilva/agent-rules-lens/main/';
 
+/** Each README shows the captures taken in its own language. */
+const SHOTS: Record<string, string[]> = {
+  'README.md': ['docs/images/agent-rules-lens-en.png', 'docs/images/local-dashboard-en.png'],
+  'README.pt-BR.md': ['docs/images/agent-rules-lens.png', 'docs/images/local-dashboard.png']
+};
+
 describe('which language is primary', () => {
-  it('makes README.md Portuguese and README.en.md English', () => {
-    expect(PT).toContain('Português | [English](README.en.md)');
-    expect(EN).toContain('[Português](README.md) | English');
+  it('makes README.md English and README.pt-BR.md Portuguese', () => {
+    expect(EN).toContain('English | [Português](README.pt-BR.md)');
+    expect(PT).toContain('[English](README.md) | Português');
 
     // A handful of load-bearing phrases, not a word-for-word comparison.
-    expect(PT).toContain('Veja quais instruções de agentes de código se aplicam');
-    expect(PT).toContain('## Escolha como usar');
     expect(EN).toContain('See which coding-agent instructions apply');
     expect(EN).toContain('## Choose how to use it');
+    expect(PT).toContain('Veja quais instruções de agentes de código se aplicam');
+    expect(PT).toContain('## Escolha como usar');
+  });
+
+  it('opens the English README with English, not a Portuguese line', () => {
+    // Whatever GitHub and the Marketplace render first has to be English.
+    const opening = EN.split('\n').slice(0, 6).join('\n');
+    expect(opening).toContain('English |');
+    expect(opening).not.toMatch(/Veja quais|Instalar no VS Code/);
   });
 
   it('lets the language switch work in both directions', () => {
-    expect(PT).toContain('](README.en.md)');
-    expect(EN).toContain('](README.md)');
+    expect(EN).toContain('](README.pt-BR.md)');
+    expect(PT).toContain('](README.md)');
     expect(existsSync(join(REPO_ROOT, 'README.md'))).toBe(true);
-    expect(existsSync(join(REPO_ROOT, 'README.en.md'))).toBe(true);
-    expect(existsSync(join(REPO_ROOT, 'README.pt-BR.md'))).toBe(false);
+    expect(existsSync(join(REPO_ROOT, 'README.pt-BR.md'))).toBe(true);
+  });
+
+  it('leaves no README.en.md behind, and nothing pointing at it', () => {
+    expect(existsSync(join(REPO_ROOT, 'README.en.md'))).toBe(false);
+    for (const [name, text] of [...READMES, ['cli/README.md', CLI] as [string, string]]) {
+      expect(text, name).not.toContain('README.en.md');
+    }
   });
 
   it('covers the same sections in both, without demanding identical prose', () => {
@@ -125,8 +146,43 @@ describe('screenshots', () => {
         const local = (src as string).slice(RAW.length);
         expect(existsSync(join(REPO_ROOT, local)), `${name} -> ${local}`).toBe(true);
       }
-      expect(text, name).toContain(`${RAW}docs/images/agent-rules-lens.png`);
-      expect(text, name).toContain(`${RAW}docs/images/local-dashboard.png`);
+    }
+  });
+
+  it('shows each README the captures taken in its own language', () => {
+    for (const [name, text] of READMES) {
+      const shown = [...text.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)].map((m) =>
+        (m[1] as string).slice(RAW.length)
+      );
+      expect(shown.sort(), name).toEqual([...SHOTS[name]!].sort());
+    }
+    // An English page must never fall back to a Portuguese capture, or vice versa.
+    expect(EN).not.toContain(`${RAW}docs/images/agent-rules-lens.png`);
+    expect(EN).not.toContain(`${RAW}docs/images/local-dashboard.png`);
+    expect(PT).not.toContain('-en.png');
+  });
+
+  it('keeps all four captures in the repository', () => {
+    for (const file of Object.values(SHOTS).flat()) {
+      const path = join(REPO_ROOT, file);
+      expect(existsSync(path), file).toBe(true);
+      const png = readFileSync(path);
+      expect(
+        png.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+        `${file} is a real PNG`
+      ).toBe(true);
+      expect(png.length, `${file} is not empty`).toBeGreaterThan(1000);
+    }
+  });
+
+  it('writes the alt text in the language of its own README', () => {
+    const alt = (text: string): string[] =>
+      [...text.matchAll(/!\[([^\]]*)\]/g)].map((m) => m[1] as string);
+    for (const text of alt(EN)) {
+      expect(text).toMatch(/\b(the|in|with|and)\b/);
+    }
+    for (const text of alt(PT)) {
+      expect(text).toMatch(/\b(do|no|na|com|que|à)\b/);
     }
   });
 
@@ -336,7 +392,7 @@ describe('marketplace manifest', () => {
     expect(manifest.publisher).toBe('williamosilva');
     expect(manifest.name).toBe('agent-rules-lens');
     expect(`${manifest.publisher}.${manifest.name}`).toBe('williamosilva.agent-rules-lens');
-    expect(manifest.version).toBe('0.1.1');
+    expect(manifest.version).toBe('0.1.2');
     expect(manifest.pricing).toBe('Free');
   });
 

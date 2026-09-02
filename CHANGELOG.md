@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.2 — 2026-09-02
+
+Documentation and presentation only. No functional change to the extension, the
+local dashboard or the CLI.
+
+- The main README is now the English one, so the GitHub landing page and the
+  Marketplace listing read in English by default.
+- The Portuguese version moved to `README.pt-BR.md` and stays one click away
+  through the language switch at the top of each file.
+- Added English screenshots of the sidebar and of the local dashboard, so the
+  images match the language of the page they appear on. The Portuguese
+  screenshots are unchanged and still used by `README.pt-BR.md`.
+
 ## 0.1.1 — 2026-09-02
 
 Documentation and Marketplace metadata only. No functional change to the

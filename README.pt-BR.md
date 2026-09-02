@@ -1,6 +1,6 @@
 # Agent Rules Lens
 
-Português | [English](README.en.md)
+[English](README.md) | Português
 
 Veja quais instruções de agentes de código se aplicam ao arquivo aberto — e por quê.
 
