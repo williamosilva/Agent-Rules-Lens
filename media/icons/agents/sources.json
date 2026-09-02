@@ -1,0 +1,288 @@
+{
+  "$comment": "Provenance of every third party mark shipped with Agent Rules Lens. Marks belong to their owners; see THIRD_PARTY_NOTICES.md.",
+  "generatedAt": "2026-09-01",
+  "icons": {
+    "claude": {
+      "tool": "Claude",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "note": "claude.com and anthropic.com are unreachable from this environment; Simple Icons records https://claude.ai as the mark source.",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/claude.svg",
+      "appliedBrandColour": "#D97757",
+      "files": {
+        "light": "claude.svg",
+        "dark": "claude.svg"
+      }
+    },
+    "cursor": {
+      "tool": "Cursor",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://cursor.com/brand",
+      "retrievedAt": "2026-09-01",
+      "files": {
+        "light": "cursor-light.svg",
+        "dark": "cursor-dark.svg"
+      },
+      "source": {
+        "light": "https://cursor.com/marketing-static/favicon-light.svg",
+        "dark": "https://cursor.com/marketing-static/favicon.svg"
+      }
+    },
+    "github-copilot": {
+      "tool": "GitHub Copilot",
+      "sourceType": "official-package",
+      "license": "MIT (Primer Octicons); the GitHub Copilot mark remains a GitHub trademark",
+      "licenseUrl": "https://github.com/primer/octicons/blob/main/LICENSE",
+      "retrievedAt": "2026-09-01",
+      "source": "https://raw.githubusercontent.com/primer/octicons/main/icons/copilot-24.svg",
+      "files": {
+        "light": "github-copilot-light.svg",
+        "dark": "github-copilot-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "(none, inherited black)",
+        "light": "#1F2328",
+        "dark": "#FFFFFF",
+        "reason": "Single colour mark. Geometry is untouched; the fill is set per theme so the mark stays legible on both."
+      }
+    },
+    "gemini": {
+      "tool": "Gemini",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/googlegemini.svg",
+      "appliedBrandColour": "#8E75B2",
+      "files": {
+        "light": "gemini.svg",
+        "dark": "gemini.svg"
+      }
+    },
+    "qwen": {
+      "tool": "Qwen",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "note": "assets.alicdn.com is unreachable from this environment; Simple Icons records https://qwen.ai as the mark source.",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/qwen.svg",
+      "appliedBrandColour": "#6950EF",
+      "files": {
+        "light": "qwen.svg",
+        "dark": "qwen.svg"
+      }
+    },
+    "windsurf": {
+      "tool": "Windsurf",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://windsurf.com/brand",
+      "retrievedAt": "2026-09-01",
+      "source": "https://windsurf.com/favicon.svg",
+      "files": {
+        "light": "windsurf.svg",
+        "dark": "windsurf.svg"
+      }
+    },
+    "cline": {
+      "tool": "Cline",
+      "sourceType": "official-repository",
+      "license": "Apache-2.0 (cline/cline); the Cline mark remains a trademark of Cline Bot Inc.",
+      "licenseUrl": "https://github.com/cline/cline/blob/main/LICENSE",
+      "retrievedAt": "2026-09-01",
+      "source": "https://raw.githubusercontent.com/cline/cline/main/apps/vscode/assets/icons/icon.svg",
+      "files": {
+        "light": "cline-light.svg",
+        "dark": "cline-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "#24292F",
+        "light": "#24292F",
+        "dark": "#FFFFFF",
+        "reason": "Single colour mark. Geometry is untouched; the fill is set per theme so the mark stays legible on both."
+      }
+    },
+    "roo-code": {
+      "tool": "Roo Code",
+      "sourceType": "official-repository",
+      "license": "Apache-2.0 (RooCodeInc/Roo-Code); the Roo Code mark remains a trademark of its owner",
+      "licenseUrl": "https://github.com/RooCodeInc/Roo-Code/blob/main/LICENSE",
+      "retrievedAt": "2026-09-01",
+      "source": "https://raw.githubusercontent.com/RooCodeInc/Roo-Code/main/src/assets/icons/icon.svg",
+      "files": {
+        "light": "roo-code-light.svg",
+        "dark": "roo-code-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "#000",
+        "light": "#000000",
+        "dark": "#FFFFFF",
+        "reason": "Single colour mark. Geometry is untouched; the fill is set per theme so the mark stays legible on both."
+      }
+    },
+    "continue": {
+      "tool": "Continue",
+      "sourceType": "official-repository",
+      "license": "Apache-2.0 (continuedev/continue); the Continue mark remains a trademark of its owner",
+      "licenseUrl": "https://github.com/continuedev/continue/blob/main/LICENSE",
+      "retrievedAt": "2026-09-01",
+      "files": {
+        "light": "continue-light.svg",
+        "dark": "continue-dark.svg"
+      },
+      "source": {
+        "light": "https://raw.githubusercontent.com/continuedev/continue/main/extensions/intellij/src/main/resources/icons/continue.svg",
+        "dark": "https://raw.githubusercontent.com/continuedev/continue/main/extensions/intellij/src/main/resources/icons/continue_dark.svg"
+      }
+    },
+    "kiro": {
+      "tool": "Kiro",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://kiro.dev/",
+      "retrievedAt": "2026-09-01",
+      "source": "https://kiro.dev/icon.svg",
+      "files": {
+        "light": "kiro.svg",
+        "dark": "kiro.svg"
+      }
+    },
+    "amazon-q": {
+      "tool": "Amazon Q Developer",
+      "sourceType": "official-repository",
+      "license": "Apache-2.0 (aws/aws-toolkit-vscode); the Amazon Q mark remains an Amazon trademark",
+      "licenseUrl": "https://github.com/aws/aws-toolkit-vscode/blob/master/LICENSE",
+      "retrievedAt": "2026-09-01",
+      "source": "https://raw.githubusercontent.com/aws/aws-toolkit-vscode/master/packages/core/resources/icons/aws/amazonq/q-gradient.svg",
+      "files": {
+        "light": "amazon-q.svg",
+        "dark": "amazon-q.svg"
+      }
+    },
+    "junie": {
+      "tool": "Junie",
+      "sourceType": "official-marketplace",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://www.jetbrains.com/company/brand/",
+      "retrievedAt": "2026-09-01",
+      "source": "https://plugins.jetbrains.com/files/26104/1138429/icon/default.svg",
+      "files": {
+        "light": "junie.svg",
+        "dark": "junie.svg"
+      }
+    },
+    "augment": {
+      "tool": "Augment",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://www.augmentcode.com/",
+      "retrievedAt": "2026-09-01",
+      "source": "https://www.augmentcode.com/favicon.svg",
+      "files": {
+        "light": "augment-light.svg",
+        "dark": "augment-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "#000000 / #ffffff via prefers-color-scheme",
+        "light": "#000000",
+        "dark": "#FFFFFF",
+        "reason": "The official file switches colour with a CSS media query. The two states are split into two files so no stylesheet has to run inside the webview."
+      },
+      "note": "Official favicon. Its own <style> declared #000000 for light and #ffffff for dark; both states are shipped as separate files."
+    },
+    "replit": {
+      "tool": "Replit Agent",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "note": "replit.com is unreachable from this environment; Simple Icons records https://repl.it as the mark source.",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/replit.svg",
+      "appliedBrandColour": "#F26207",
+      "files": {
+        "light": "replit.svg",
+        "dark": "replit.svg"
+      }
+    },
+    "qoder": {
+      "tool": "Qoder",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://qoder.com/",
+      "retrievedAt": "2026-09-01",
+      "source": "https://qoder.com/favIcon.svg",
+      "files": {
+        "light": "qoder.svg",
+        "dark": "qoder.svg"
+      }
+    },
+    "codebuddy": {
+      "tool": "CodeBuddy",
+      "sourceType": "official-website",
+      "license": "Trademark asset — usage subject to the owner's brand guidelines",
+      "licenseUrl": "https://www.codebuddy.ai/",
+      "retrievedAt": "2026-09-01",
+      "note": "Asset URL taken from the markup of the official site www.codebuddy.ai.",
+      "source": "https://codebuddy-1328495429.cos.accelerate.myqcloud.com/web/ide/logo.svg",
+      "files": {
+        "light": "codebuddy.svg",
+        "dark": "codebuddy.svg"
+      }
+    },
+    "trae": {
+      "tool": "Trae",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "note": "lf-cdn.trae.ai is unreachable from this environment; Simple Icons records https://www.trae.ai as the mark source.",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/trae.svg",
+      "appliedBrandColour": "#32F08C",
+      "files": {
+        "light": "trae.svg",
+        "dark": "trae.svg"
+      }
+    },
+    "zed": {
+      "tool": "Zed",
+      "sourceType": "official-repository",
+      "license": "Apache-2.0 (zed-industries/zed); the Zed mark remains a trademark of Zed Industries",
+      "licenseUrl": "https://github.com/zed-industries/zed/blob/main/LICENSE-APACHE",
+      "retrievedAt": "2026-09-01",
+      "source": "https://raw.githubusercontent.com/zed-industries/zed/main/assets/icons/ai_zed.svg",
+      "files": {
+        "light": "zed-light.svg",
+        "dark": "zed-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "#C6CAD0",
+        "light": "#1A1A1A",
+        "dark": "#C6CAD0",
+        "reason": "Single colour mark. Geometry is untouched; the fill is set per theme so the mark stays legible on both."
+      }
+    },
+    "opencode": {
+      "tool": "OpenCode",
+      "sourceType": "simple-icons",
+      "license": "CC0-1.0 (Simple Icons SVG); the brand mark itself remains a trademark of its owner",
+      "licenseUrl": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "retrievedAt": "2026-09-01",
+      "note": "opencode.ai is unreachable from this environment; Simple Icons records the project repository as the mark source.",
+      "source": "https://cdn.jsdelivr.net/npm/simple-icons@16.29.0/icons/opencode.svg",
+      "files": {
+        "light": "opencode-light.svg",
+        "dark": "opencode-dark.svg"
+      },
+      "monochromeRecolour": {
+        "sourceColour": "(none, inherited black)",
+        "light": "#000000",
+        "dark": "#FFFFFF",
+        "reason": "Single colour mark. Geometry is untouched; the fill is set per theme so the mark stays legible on both."
+      }
+    }
+  }
+}

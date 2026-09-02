@@ -1,0 +1,8 @@
+---
+alwaysApply: false
+globs: src/frontend/**/*.tsx
+description: React component rules
+---
+
+- One component per file.
+- Keep state as close as possible to where it is used.

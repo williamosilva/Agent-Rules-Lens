@@ -1,0 +1,7 @@
+---
+alwaysApply: false
+globs:
+  nested: true
+---
+
+The globs value is a mapping, which is not a glob or a list of globs.

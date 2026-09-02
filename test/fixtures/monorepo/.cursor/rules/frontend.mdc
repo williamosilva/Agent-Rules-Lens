@@ -1,0 +1,7 @@
+---
+alwaysApply: false
+globs: src/backend/**/*.ts
+---
+
+Named frontend but scoped to the backend on purpose, so a test can prove the
+file name is never used as evidence.

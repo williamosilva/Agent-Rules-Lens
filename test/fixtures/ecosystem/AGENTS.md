@@ -1,0 +1,3 @@
+# Root conventions
+
+- Conventional commits.

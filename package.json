@@ -1,0 +1,123 @@
+{
+  "name": "agent-rules-lens",
+  "displayName": "Agent Rules Lens",
+  "description": "See which AI coding instructions apply to the file you are editing.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "publisher": "agent-rules-lens",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/williamosilva/Agent-Rules-Lens.git"
+  },
+  "bugs": {
+    "url": "https://github.com/williamosilva/Agent-Rules-Lens/issues"
+  },
+  "homepage": "https://github.com/williamosilva/Agent-Rules-Lens#readme",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "agents.md",
+    "claude",
+    "cursor",
+    "copilot",
+    "instructions"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:**/AGENTS.md",
+    "workspaceContains:**/CLAUDE.md",
+    "workspaceContains:**/CLAUDE.local.md",
+    "workspaceContains:.claude/CLAUDE.md",
+    "workspaceContains:.claude/rules/**/*.md",
+    "workspaceContains:.cursor/rules/**/*.mdc",
+    "workspaceContains:.github/copilot-instructions.md",
+    "workspaceContains:.github/instructions/**/*.instructions.md"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "agentRulesLens",
+          "title": "%view.title%",
+          "icon": "media/agent-rules-lens.svg"
+        }
+      ]
+    },
+    "views": {
+      "agentRulesLens": [
+        {
+          "type": "webview",
+          "id": "agentRulesLens.rulesView",
+          "name": "%view.name%",
+          "icon": "media/agent-rules-lens.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "agentRulesLens.refresh",
+        "title": "%command.refresh%",
+        "category": "Agent Rules Lens",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "agentRulesLens.focusView",
+        "title": "%command.focusView%",
+        "category": "Agent Rules Lens"
+      },
+      {
+        "command": "agentRulesLens.openRule",
+        "title": "%command.openRule%",
+        "category": "Agent Rules Lens"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "agentRulesLens.refresh",
+          "when": "view == agentRulesLens.rulesView",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "%configuration.title%",
+      "properties": {
+        "agentRulesLens.customInstructionPatterns": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "markdownDescription": "%configuration.customInstructionPatterns%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test",
+    "package": "npm run compile && vsce package --no-dependencies",
+    "vscode:prepublish": "npm run compile"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "minimatch": "^10.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

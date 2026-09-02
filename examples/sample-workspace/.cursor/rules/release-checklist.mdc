@@ -1,0 +1,5 @@
+---
+title: Release checklist
+---
+
+Run the full test suite before tagging a release.

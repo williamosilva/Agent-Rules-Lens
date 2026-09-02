@@ -1,0 +1,6 @@
+---
+alwaysApply: false
+description: Apply when touching payments.
+---
+
+Never store raw card data.

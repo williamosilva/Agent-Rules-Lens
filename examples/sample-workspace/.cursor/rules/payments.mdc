@@ -1,0 +1,6 @@
+---
+alwaysApply: false
+description: Apply when changing payment or checkout code.
+---
+
+Never store raw card data. Use the payment provider token instead.

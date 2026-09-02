@@ -1,0 +1,383 @@
+:root {
+  --arl-border: var(--vscode-input-border, var(--vscode-panel-border, rgba(128, 128, 128, 0.35)));
+  --arl-applies: var(--vscode-testing-iconPassed, #2ea043);
+  --arl-agent: var(--vscode-editorWarning-foreground, #bf8803);
+  --arl-manual: var(--vscode-descriptionForeground, #8b8b8b);
+  --arl-invalid: var(--vscode-errorForeground, #f14c4c);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--vscode-sideBar-background, transparent);
+  color: var(--vscode-foreground);
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size);
+  line-height: 1.35;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+button:focus-visible,
+summary:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder, var(--arl-border));
+  outline-offset: -1px;
+}
+
+/* One line, clipped with an ellipsis rather than wrapped. */
+.one-line,
+.header-path,
+.header-summary,
+.header-tokens,
+.section-label,
+.section-count,
+.rule-name,
+.rule-state,
+.artifact-name,
+.artifact-note,
+.warning-title,
+.warning-summary {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Header */
+
+.header {
+  padding: 7px 10px 8px;
+  border-bottom: 1px solid var(--arl-border);
+}
+
+.header-bare {
+  padding-bottom: 7px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-path {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+
+.header-summary {
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.header-tokens {
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.9em;
+}
+
+/* Language switch */
+
+.lang {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.85em;
+  line-height: 1;
+}
+
+.lang-sep {
+  color: var(--vscode-descriptionForeground);
+  opacity: 0.6;
+}
+
+.lang-option {
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: var(--vscode-descriptionForeground);
+  letter-spacing: 0.03em;
+}
+
+.lang-option:hover {
+  background: var(--vscode-list-hoverBackground);
+  color: var(--vscode-foreground);
+}
+
+.lang-option.is-active {
+  color: var(--vscode-foreground);
+  font-weight: 700;
+  background: var(--vscode-list-hoverBackground);
+}
+
+.notice {
+  margin: 7px 10px 0;
+  padding: 5px 8px;
+  border: 1px solid var(--arl-border);
+  border-radius: 4px;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* Sections */
+
+.section {
+  border-bottom: 1px solid var(--arl-border);
+}
+
+.section > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.section > summary:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.section > summary::before {
+  content: '\25B8';
+  flex: 0 0 auto;
+  width: 9px;
+  color: var(--vscode-descriptionForeground);
+}
+
+.section[open] > summary::before {
+  content: '\25BE';
+}
+
+.section-label {
+  flex: 1 1 auto;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+}
+
+/* The count never pushes the heading or the mark out of the row. */
+.section-count {
+  flex: 0 0 auto;
+  max-width: 55%;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.85em;
+}
+
+.section-body {
+  padding: 0 0 5px;
+}
+
+.section-empty {
+  padding: 1px 10px 5px 25px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.9em;
+}
+
+/* Marks: on section headings, and on rows that can mix tools. */
+
+.icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.icon-img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  display: block;
+}
+
+/* VS Code stamps the theme on the body, so no script has to react to it. */
+.icon-dark {
+  display: none;
+}
+
+body.vscode-dark .icon-light,
+body.vscode-high-contrast .icon-light {
+  display: none;
+}
+
+body.vscode-dark .icon-dark,
+body.vscode-high-contrast .icon-dark {
+  display: block;
+}
+
+/* Rule rows: two lines, never more. */
+
+.rule {
+  display: block;
+  width: 100%;
+  padding: 3px 10px 4px 25px;
+}
+
+.rule:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.rule-top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.rule-name {
+  flex: 1 1 auto;
+}
+
+.rule-tokens {
+  flex: 0 0 auto;
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rule-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9em;
+}
+
+.dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--arl-manual);
+}
+
+.rule-state {
+  flex: 1 1 auto;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* The dot carries the colour; the label spells the state out as well. */
+.tone-matching .dot {
+  background: var(--arl-applies);
+}
+.tone-matching .rule-state {
+  color: var(--vscode-foreground);
+}
+
+.tone-agent .dot {
+  background: var(--arl-agent);
+}
+.tone-agent .rule-state {
+  color: var(--arl-agent);
+}
+
+.tone-manual .dot {
+  background: var(--arl-manual);
+}
+
+.tone-invalid .dot {
+  background: var(--arl-invalid);
+}
+.tone-invalid .rule-state {
+  color: var(--arl-invalid);
+}
+
+/* Cannot determine: a hollow warning ring, distinct from the solid dot of an
+   agent decided rule and from the solid red of an invalid one. */
+.tone-unknown .dot {
+  background: transparent;
+  border: 1px solid var(--arl-agent);
+}
+.tone-unknown .rule-state {
+  color: var(--arl-agent);
+}
+
+.tone-notApplicable .dot {
+  background: transparent;
+  border: 1px solid var(--arl-manual);
+}
+
+/* Detected and candidate files: recognized, never given a status. */
+
+.artifact {
+  display: block;
+  width: 100%;
+  padding: 3px 10px 4px 25px;
+}
+
+.artifact:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.artifact-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.artifact-name {
+  flex: 1 1 auto;
+}
+
+.artifact-note {
+  padding-left: 22px;
+  font-size: 0.9em;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* Warnings: title, then location and consequence, both on one line. */
+
+.warning {
+  display: block;
+  width: 100%;
+  padding: 4px 10px 5px 25px;
+}
+
+.warning:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.warning-title {
+  font-weight: 600;
+  color: var(--vscode-editorWarning-foreground);
+}
+
+.warning-summary {
+  font-size: 0.9em;
+  color: var(--vscode-descriptionForeground);
+}
+
+/* Empty state */
+
+.empty {
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.empty-title {
+  font-weight: 600;
+}
+
+.empty-body {
+  margin-top: 5px;
+  color: var(--vscode-descriptionForeground);
+}

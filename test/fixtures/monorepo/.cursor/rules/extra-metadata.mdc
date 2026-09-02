@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+priority: 10
+owner: platform-team
+---
+
+Applies to everything; the two extra fields are reported and ignored.

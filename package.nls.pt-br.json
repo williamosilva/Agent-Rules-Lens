@@ -1,0 +1,9 @@
+{
+  "view.title": "Agent Rules Lens",
+  "view.name": "Agent Rules Lens",
+  "command.refresh": "Atualizar",
+  "command.focusView": "Focar na visão",
+  "command.openRule": "Abrir regra",
+  "configuration.title": "Agent Rules Lens",
+  "configuration.customInstructionPatterns": "Globs adicionais, relativos ao projeto, para listar em **Possíveis instruções personalizadas**. Listar um arquivo aqui significa apenas que você quer acompanhá-lo: a extensão continua não afirmando que algum agente o carrega. Caminhos absolutos e caminhos fora do projeto são ignorados."
+}

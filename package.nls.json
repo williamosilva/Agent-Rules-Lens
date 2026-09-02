@@ -1,0 +1,9 @@
+{
+  "view.title": "Agent Rules Lens",
+  "view.name": "Agent Rules Lens",
+  "command.refresh": "Refresh",
+  "command.focusView": "Focus View",
+  "command.openRule": "Open Rule",
+  "configuration.title": "Agent Rules Lens",
+  "configuration.customInstructionPatterns": "Extra workspace-relative globs to list under **Possible custom instructions**. Listing a file here only means you want to keep an eye on it: the extension still does not claim that any agent loads it. Absolute paths and paths escaping the workspace are ignored."
+}
